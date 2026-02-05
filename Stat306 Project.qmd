@@ -4,32 +4,35 @@ Group Members:
 
 A\) Data Source and Collection
 
+We will use the Life Expectancy (WHO) dataset from Kaggle. This dataset was compiled from the World Health Organization (WHO) Global Health Observatory data repository and United Nations economic data covering the years 2000–2015 for 193 countries. It contains health, demographic, socioeconomic, and immunization indicators related to life expectancy. Data were merged into one dataset with 22 columns and 2938 observations.
+
 B\) Variable Description
 
-| variable name  | variable type | description |
-|------|------|----------|
-| Country | categorical   | Name of the country       |
-| Year | numberic   | Year of observation       |
-| Status | categorical   | 是       |
-| Life expectancy | numberic   | 是       |
-| Adult Mortality | numberic   | 是       |
-| infant deaths | numberic   | 是       |
-| Alcohol | numberic   | 是       |
-| percentage expenditure | numberic   | 是       |
-| Hepatitis B | numberic   | 是       |
-| Measles | numberic   | 是       |
-| BMI | numberic   | 是       |
-| under-five deaths  | numberic   | 是       |
-| Polio | numberic   | 是       |
-| Total expenditure | numberic   | 是       |
-| Diphtheria  | numberic   | 是       |
-| HIV/AIDS | numberic   | 是       |
-| GDP | numberic   | 是       |
-| Population | numberic   | 是       |
-| thinness  1-19 years | numberic   | 是       |
-| thinness 5-9 years | numberic   | 是       |
-| Income composition of resources | numberic   | 是       |
-| Schooling | numberic   | 是       |
+| variable name                   | variable type | description         |
+|---------------------------------|---------------|---------------------|
+| Country                         | categorical   | Name of the country |
+| Year                            | numerical     | Year of observation |
+| Status                          | categorical   |                     |
+| Life expectancy                 | numberic      |                     |
+| Adult Mortality                 | numberic      |                     |
+| infant deaths                   | numberic      | 是                  |
+| Alcohol                         | numberic      | 是                  |
+| percentage expenditure          | numberic      | 是                  |
+| Hepatitis B                     | numberic      | 是                  |
+| Measles                         | numberic      | 是                  |
+| BMI                             | numberic      | 是                  |
+| under-five deaths               | numberic      | 是                  |
+| Polio                           | numberic      | 是                  |
+| Total expenditure               | numberic      | 是                  |
+| Diphtheria                      | numberic      | 是                  |
+| HIV/AIDS                        | numberic      | 是                  |
+| GDP                             | numberic      | 是                  |
+| Population                      | numberic      | 是                  |
+| thinness 1-19 years             | numberic      | 是                  |
+| thinness 5-9 years              | numberic      | 是                  |
+| Income composition of resources | numberic      | 是                  |
+| Schooling                       | numberic      | 是                  |
+
 C\) Research Question and Context
 
 D\) Group Roles and Responsibilities
