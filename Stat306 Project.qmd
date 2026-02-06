@@ -20,7 +20,7 @@ Data were merged into one dataset with 22 columns and 2938 observations.
 B\) Variable Description
 
 | variable name | variable type | description |
-|--------------------------------|-------------------|---------------------|
+|------------------------------|-------------------|-----------------------|
 | Country | categorical | Name of the country |
 | Year | numerical | Year of observation |
 | Status | categorical | The status of country (Developing or Developed) |
