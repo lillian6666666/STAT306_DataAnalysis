@@ -61,7 +61,7 @@ D\) Group Roles and Responsibilities
 
 Name (student num): Data preparation and organization
 
-Member 2: Exploratory data analysis and visualization
+Member 2 Jiayi Lyu(34424390): Exploratory data analysis and visualization
 
 Member 3 Ruiting Jiang (42475251): Regression modelling and diagnostic
 checks
