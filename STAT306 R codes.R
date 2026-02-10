@@ -1,8 +1,6 @@
 ## R Source
 
-import kagglehub
+Life.Expectancy.Data.2 <- read.csv("~/Downloads/Life Expectancy Data 2.csv", 
+                                   header=FALSE)
+Data <- Life.Expectancy.Data.2
 
-# Download latest version
-path = kagglehub.dataset_download("kumarajarshi/life-expectancy-who")
-
-print("Path to dataset files:", path)
