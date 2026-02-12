@@ -1,21 +1,10 @@
----
-editor: 
-  markdown: 
-    wrap: 72
----
-
 **STAT 306 Interim Proposal**
 
 Group Members:Ruiting Jiang, Mark Cao, Lillian Chen, Jiayi Lyu
 
 A\) Data Source and Collection
 
-We will use the Life Expectancy (WHO) dataset from Kaggle. This dataset
-was compiled from the World Health Organization (WHO) Global Health
-Observatory data repository and United Nations economic data covering
-the years 2000–2015 for 193 countries. It contains health, demographic,
-socioeconomic, and immunization indicators related to life expectancy.
-Data were merged into one dataset with 22 columns and 2938 observations.
+We will use the Life Expectancy (WHO) dataset from Kaggle. This dataset was compiled from the World Health Organization (WHO) Global Health Observatory data repository and United Nations economic data covering the years 2000–2015 for 193 countries. It contains health, demographic, socioeconomic, and immunization indicators related to life expectancy. Data were merged into one dataset with 22 columns and 2938 observations.
 
 B\) Variable Description
 
@@ -48,27 +37,18 @@ C\) Research Question and Context
 
 Response variable: Life expectancy
 
-Life expectancy is a key indicator of population health and social
-development. Many factors influencing life expectancy are interrelated,
-making multiple linear regression a suitable framework for inference.
-Our primary research question is:
+Life expectancy is a key indicator of population health and social development. Many factors influencing life expectancy are interrelated, making multiple linear regression a suitable framework for inference. Our primary research question is:
 
-Find out the relationship and association between bmi, schooling and
-life expectancy across different types of country (developed and
-developing).
+Find out the relationship and association between bmi, schooling and life expectancy across different types of country (developed and developing).
 
 D\) Group Roles and Responsibilities
 
 Member 1 Lillian Chen (86231008): Data preparation and organization
 
-Member 2 Jiayi Lyu(34424390): Exploratory data analysis and
-visualization
+Member 2 Jiayi Lyu(34424390): Exploratory data analysis and visualization
 
-Member 3 Ruiting Jiang (42475251): Regression modelling and diagnostic
-checks
+Member 3 Ruiting Jiang (42475251): Regression modelling and diagnostic checks
 
 Member 4: Model selection, interpretation, and report writing
 
-All four members are expected to contribute to the interpretation and
-revision of the final report, and responsibilities will be shared
-equally.
+All four members are expected to contribute to the interpretation and revision of the final report, and responsibilities will be shared equally.
