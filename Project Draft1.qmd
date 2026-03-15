@@ -15,7 +15,7 @@ Our study aims to learn more about how schooling is associated with life expecta
 
 The motivation for this study is to further understand, based on statistical analysis, whether these two factors have a significant impact on life expectancy across countries. By examining the relationship between schooling, development status, and life expectancy, the results may help identify areas where improvements can be made to better inform policy making and guide efforts aimed at improving public health and overall quality of life, ultimately helping people live longer and healthier lives.
 
-**B) Analysis**
+**B) Exploratory Data Analysis**
 
 | Variable              | Count | Median   | Mean     | SD       |
 |-----------------------|-------|----------|----------|----------|
@@ -25,6 +25,27 @@ The motivation for this study is to further understand, based on statistical ana
 Status (Categorical): Developed & Developing
 
 The summary statistics show that the average life expectancy across countries is approximately 69.22 years, with a median of 72.10 years and a standard deviation of 9.52 years, indicating moderate variability among countries. The average years of schooling is approximately 11.99 years, with a median of 12.30 years and a standard deviation of 3.36 years, suggesting noticeable differences in education levels across countries.
+
+---
+
+We begin by exploring the relationship between schooling and life expectancy, as well as the role of development status.
+
+#### Schooling vs Life Expectancy by Development Status
+
+```{r}
+data |>
+  ggplot(aes(x = Schooling, y = LifeExpectancy, color = Status)) +
+  geom_point() +
+  labs(
+    title = "Life Expectancy vs Schooling by Development Status",
+    x = "Schooling (years)",
+    y = "Life Expectancy (years)"
+  )
+```
+
+The scatter plot suggests a **positive relationship** between schooling and life expectancy: countries with higher average years of schooling tend to have higher life expectancy. In addition, developed countries generally appear to cluster in the upper-right portion of the plot, indicating both **higher schooling levels** and **higher life expectancy** compared with developing countries. This pattern suggests that both **Schooling** and **Status** are relevant predictors, and it also motivates considering an **interaction model** to determine whether the relationship between schooling and life expectancy differs by development status.
+
+---
 
 ## Model 1: Additive Linear Regression
 
@@ -56,6 +77,7 @@ The Normal Q–Q plot shows that most residuals lie close to the reference line,
 
 Overall, the diagnostic plots indicate that the additive regression model provides a **reasonable fit to the data**.
 
+---
 
 ## Model 2: Interaction Model
 
@@ -89,3 +111,7 @@ qqline(resid(model2))
 The Q–Q plot shows that the residuals largely follow the reference line, with minor deviations in the extreme tails. This indicates that the **normality assumption for the residuals is approximately satisfied**.
 
 Overall, the diagnostic plots suggest that the **interaction model also provides an appropriate fit**, and including the interaction term allows us to explore whether the effect of schooling on life expectancy differs by development status.
+
+
+
+
