@@ -34,7 +34,7 @@ $$
 LifeExpectancy = \beta_0 + \beta_1(Schooling) + \beta_2(Status) + \epsilon
 $$
 
-### Residuals vs Fitted Plot
+### Model 1: Residuals vs Fitted Plot
 
 ```{r}
 plot(model1$fitted.values, model1$residuals,
@@ -45,7 +45,7 @@ abline(h=0)
 ```
 The residuals vs fitted values plot shows that the residuals are generally scattered around zero without a clear systematic pattern. This suggests that the **linearity assumption** of the regression model is reasonably satisfied. In addition, the spread of the residuals appears relatively constant across the range of fitted values, indicating that the **homoscedasticity (constant variance) assumption** is reasonably met.
 
-### Normal Q–Q Plot
+### Model 1: Normal Q–Q Plot
 
 ```{r}
 qqnorm(resid(model1),
@@ -55,3 +55,37 @@ qqline(resid(model1))
 The Normal Q–Q plot shows that most residuals lie close to the reference line, suggesting that the residuals are **approximately normally distributed**. Although there are slight deviations in the tails, the overall pattern supports the assumption of normality for the regression residuals.
 
 Overall, the diagnostic plots indicate that the additive regression model provides a **reasonable fit to the data**.
+
+
+## Model 2: Interaction Model
+
+Next, we extend the regression model by including an **interaction term between Schooling and Status** to investigate whether the relationship between schooling and life expectancy differs between developed and developing countries.
+
+$$
+LifeExpectancy = \beta_0 + \beta_1(Schooling) + \beta_2(Status) + \beta_3(Schooling \times Status) + \epsilon
+$$
+
+
+### Model 2: Residuals vs Fitted Plot
+
+```{r}
+plot(model2$fitted.values, model2$residuals,
+     main = "Model 2: Residuals vs Fitted (Interaction Model)",
+     xlab = "Fitted Values",
+     ylab = "Residuals")
+abline(h = 0)
+```
+
+The residuals vs fitted values plot for the interaction model also shows residuals randomly scattered around zero. There is no clear systematic structure or strong curvature, suggesting that the **linearity assumption remains reasonable**. The variability of the residuals also appears fairly constant across fitted values, indicating that the **constant variance assumption is satisfied**.
+
+### Model 2: Normal Q–Q Plot
+
+```{r}
+qqnorm(resid(model2),
+       main = "Model 2: Normal Q–Q Plot (Interaction Model)")
+qqline(resid(model2))
+```
+
+The Q–Q plot shows that the residuals largely follow the reference line, with minor deviations in the extreme tails. This indicates that the **normality assumption for the residuals is approximately satisfied**.
+
+Overall, the diagnostic plots suggest that the **interaction model also provides an appropriate fit**, and including the interaction term allows us to explore whether the effect of schooling on life expectancy differs by development status.
