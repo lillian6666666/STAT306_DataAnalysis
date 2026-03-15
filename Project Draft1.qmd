@@ -23,3 +23,6 @@ The motivation for this study is to further understand, based on statistical ana
 | Schooling (years)     | 2775  | 12.30000 | 11.99279 | 3.35892  |
 
 Status (Categorical): Developed & Developing
+
+The summary statistics show that the average life expectancy across countries is approximately 69.22 years, with a median of 72.10 years and a standard deviation of 9.52 years, indicating moderate variability among countries. The average years of schooling is approximately 11.99 years, with a median of 12.30 years and a standard deviation of 3.36 years, suggesting noticeable differences in education levels across countries.
+
