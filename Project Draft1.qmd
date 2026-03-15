@@ -26,3 +26,27 @@ Status (Categorical): Developed & Developing
 
 The summary statistics show that the average life expectancy across countries is approximately 69.22 years, with a median of 72.10 years and a standard deviation of 9.52 years, indicating moderate variability among countries. The average years of schooling is approximately 11.99 years, with a median of 12.30 years and a standard deviation of 3.36 years, suggesting noticeable differences in education levels across countries.
 
+## Model 1: Additive Linear Regression
+
+We first fit an additive linear regression model including **Schooling** and **Status** as predictors:
+
+$$
+LifeExpectancy = \beta_0 + \beta_1(Schooling) + \beta_2(Status) + \epsilon
+$$
+
+### Residuals vs Fitted Plot
+
+```{r}
+plot(model1$fitted.values, model1$residuals,
+     main="Model 1: Residuals vs Fitted (Additive Model)",
+     xlab="Fitted value",
+     ylab="Residual")
+abline(h=0)
+```
+The residuals vs fitted values plot shows that the residuals are generally scattered around zero without a clear systematic pattern. This suggests that the **linearity assumption** of the regression model is reasonably satisfied. In addition, the spread of the residuals appears relatively constant across the range of fitted values, indicating that the **homoscedasticity (constant variance) assumption** is reasonably met.
+
+### Normal Q–Q Plot
+
+The Normal Q–Q plot shows that most residuals lie close to the reference line, suggesting that the residuals are **approximately normally distributed**. Although there are slight deviations in the tails, the overall pattern supports the assumption of normality for the regression residuals.
+
+Overall, the diagnostic plots indicate that the additive regression model provides a **reasonable fit to the data**.
