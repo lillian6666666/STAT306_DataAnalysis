@@ -15,7 +15,7 @@ Our study aims to learn more about how schooling is associated with life expecta
 
 The motivation for this study is to further understand, based on statistical analysis, whether these two factors have a significant impact on life expectancy across countries. By examining the relationship between schooling, development status, and life expectancy, the results may help identify areas where improvements can be made to better inform policy making and guide efforts aimed at improving public health and overall quality of life, ultimately helping people live longer and healthier lives.
 
-**B) Exploratory Data Analysis**
+**B) Analysis**
 
 | Variable              | Count | Median   | Mean     | SD       |
 |-----------------------|-------|----------|----------|----------|
