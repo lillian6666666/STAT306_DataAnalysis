@@ -1,0 +1,14 @@
+**Project Draft 1**
+
+A\) Introduction
+
+Year: 2015
+
+B\) Analysis
+
+| Variable              | Count | Median   | Mean     | SD       |
+|-----------------------|-------|----------|----------|----------|
+| Life expectancy (age) | 2928  | 72.10000 | 69.22493 | 9.523867 |
+| Schooling (years)     | 2775  | 12.30000 | 11.99279 | 3.35892  |
+
+Status (Categorical): Developed & Developing
