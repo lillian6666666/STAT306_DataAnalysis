@@ -28,14 +28,27 @@ data|> ggplot(aes(x=Schooling, y= LifeExpectancy, color=Status))+geom_point()
 # resid.plot(reg)
 data$Status <- as.factor(data$Status)
 
-# Fit regression
-model <- lm(LifeExpectancy ~ Schooling *Status, data = data)
-summary(model)
+# Fit regression(additive)
+model1 <- lm(LifeExpectancy ~ Schooling + Status, data = data)
+summary(model1)
 
 # Residuals vs Fitted
-plot(model$fitted.values, model$residuals,
+plot(model1$fitted.values, model1$residuals,
      xlab="Fitted value", ylab="Residual")
 
 # Q-Q plot
-qqnorm(resid(model))
-qqline(resid(model))
+qqnorm(resid(model1))
+qqline(resid(model1))
+
+# Fit regression with interaction term
+model2 <- lm(LifeExpectancy ~ Schooling *Status, data = data)
+summary(model2)
+
+# Residuals vs Fitted
+plot(model2$fitted.values, model2$residuals,
+     xlab="Fitted value", ylab="Residual")
+
+# Q-Q plot
+qqnorm(resid(model2))
+qqline(resid(model2))
+
