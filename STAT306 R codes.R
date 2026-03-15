@@ -12,7 +12,7 @@ data
 mean(data$`Life expectancy`, na.rm = TRUE)
 median(data$`Life expectancy`, na.rm = TRUE)
 sd(data$`Life expectancy`, na.rm = TRUE)
-nrow(data$`Life expectancy`)
+sum(!is.na(data$Schooling))
 
 # rename variable for easier use
 data <- data %>%
