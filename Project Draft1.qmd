@@ -47,6 +47,11 @@ The residuals vs fitted values plot shows that the residuals are generally scatt
 
 ### Normal Q–Q Plot
 
+```{r}
+qqnorm(resid(model1),
+       main = "Model 1: Normal Q–Q Plot (Additive Model)")
+qqline(resid(model1))
+```
 The Normal Q–Q plot shows that most residuals lie close to the reference line, suggesting that the residuals are **approximately normally distributed**. Although there are slight deviations in the tails, the overall pattern supports the assumption of normality for the regression residuals.
 
 Overall, the diagnostic plots indicate that the additive regression model provides a **reasonable fit to the data**.
