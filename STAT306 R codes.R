@@ -1,7 +1,7 @@
 ## R Source
 
 Life.Expectancy.Data.2 <- read.csv("~/Downloads/Life Expectancy Data 2.csv", 
-                                   header=FALSE)
+                                  header=FALSE)
 Data <- Life.Expectancy.Data.2
 
 ## Directly read 
@@ -34,11 +34,13 @@ summary(model1)
 
 # Residuals vs Fitted
 plot(model1$fitted.values, model1$residuals,
+     main = "Model 1: Residuals vs Fitted (Additive Model)",
      xlab="Fitted value", ylab="Residual")
 abline(h=0)
 
 # Q-Q plot
-qqnorm(resid(model1))
+qqnorm(resid(model1),
+       main = "Model 1: Normal Q-Q Plot (Additive Model)")
 qqline(resid(model1))
 
 # Fit regression with interaction term
@@ -47,10 +49,10 @@ summary(model2)
 
 # Residuals vs Fitted
 plot(model2$fitted.values, model2$residuals,
+     main = "Model 2: Residuals vs Fitted (Interaction Model)",
      xlab="Fitted value", ylab="Residual")
 abline(h=0)
 
 # Q-Q plot
-qqnorm(resid(model2))
+qqnorm(resid(model2),main = "Model 2: Normal Q-Q Plot (Interaction Model)")
 qqline(resid(model2))
-
