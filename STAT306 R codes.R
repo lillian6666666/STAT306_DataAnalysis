@@ -8,3 +8,8 @@ Data <- Life.Expectancy.Data.2
 library(tidyverse)
 data <- read_csv("https://drive.google.com/uc?export=download&id=1A_Nkqsxh4ymFIJDj7Fbo1SOCoVujhbjb")
 data
+
+mean(data$`Life expectancy`, na.rm = TRUE)
+median(data$`Life expectancy`, na.rm = TRUE)
+sd(data$`Life expectancy`, na.rm = TRUE)
+nrow(data$`Life expectancy`, na.rm = TRUE)
