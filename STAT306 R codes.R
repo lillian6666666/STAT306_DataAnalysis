@@ -35,6 +35,7 @@ summary(model1)
 # Residuals vs Fitted
 plot(model1$fitted.values, model1$residuals,
      xlab="Fitted value", ylab="Residual")
+abline(h=0)
 
 # Q-Q plot
 qqnorm(resid(model1))
@@ -47,6 +48,7 @@ summary(model2)
 # Residuals vs Fitted
 plot(model2$fitted.values, model2$residuals,
      xlab="Fitted value", ylab="Residual")
+abline(h=0)
 
 # Q-Q plot
 qqnorm(resid(model2))
