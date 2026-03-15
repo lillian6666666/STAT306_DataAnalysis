@@ -4,7 +4,9 @@
 
 Life expectancy is an important indicator of a country's overall health and socioeconomic development. With Canada having an average of 82.2 years in 2024 (Statistics Canada, 2026), this provides residents with an indication of wellbeing based on solid statistics. Life expectancy is the average number of years a person is expected to live under current mortality conditions, which might be affected by different variables such as sex, income, and access to healthcare.
 
-"We will use the Life Expectancy (WHO) dataset from Kaggle, compiled from the WHO Global Health Observatory and UN economic data. It contains annual observations from 2000 to 2015 for 193 countries, covering health, demographic, socioeconomic, and immunization indicators (22 variables, 2938 observations)."
+We will use the Life Expectancy (WHO) dataset from Kaggle, compiled from the WHO Global Health Observatory and UN economic data. It contains annual observations from 2000 to 2015 for 193 countries, covering health, demographic, socioeconomic, and immunization indicators (22 variables, 2938 observations).
+
+Specifically, the data were collected from national health and economic reports by organizations such as the World Health Organization (WHO). These organizations compile, clean and standardize the data into databases, allowing indicators to be compared across different countries and years. Each observation represents a country in a specific year, with variables such as life expectancy, schooling, mortality rates, BMI, and development status.
 
 The primary response variable we chose to analyze is life expectancy in years in 2015, serving as the dependent variable. Two explanatory variables are Schooling (number of years of schooling) and Status (country status, classified as developed or developing). We specifically chose these two because:\
 
