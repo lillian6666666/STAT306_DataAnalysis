@@ -28,14 +28,31 @@ The summary statistics show that the average life expectancy across countries is
 
 ---
 
+## Exploratory Data Analysis
+
 We begin by exploring the relationship between schooling and life expectancy, as well as the role of development status.
 
-#### Schooling vs Life Expectancy by Development Status
+### Life Expectancy by Development Status
+
+```{r}
+ggplot(data, aes(x = Status, y = LifeExpectancy, fill = Status)) +
+  geom_boxplot() +
+  labs(
+    title = "Life Expectancy by Development Status",
+    x = "Development Status",
+    y = "Life Expectancy (years)"
+  )
+```
+
+The boxplot suggests that developed countries tend to have higher life expectancy than developing countries. This indicates that development status may be an important predictor of life expectancy.
+
+### Schooling vs Life Expectancy by Development Status
 
 ```{r}
 data |>
   ggplot(aes(x = Schooling, y = LifeExpectancy, color = Status)) +
   geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
   labs(
     title = "Life Expectancy vs Schooling by Development Status",
     x = "Schooling (years)",
@@ -111,7 +128,5 @@ qqline(resid(model2))
 The Q–Q plot shows that the residuals largely follow the reference line, with minor deviations in the extreme tails. This indicates that the **normality assumption for the residuals is approximately satisfied**.
 
 Overall, the diagnostic plots suggest that the **interaction model also provides an appropriate fit**, and including the interaction term allows us to explore whether the effect of schooling on life expectancy differs by development status.
-
-
 
 
