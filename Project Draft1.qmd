@@ -1,6 +1,6 @@
 **Project Draft 1**
 
-**A) Introduction**
+## Introduction
 
 Life expectancy is an important indicator of a country's overall health and socioeconomic development. With Canada having an average of 82.2 years in 2024 (Statistics Canada, 2026), this provides residents with an indication of wellbeing based on solid statistics. Life expectancy is the average number of years a person is expected to live under current mortality conditions, which might be affected by different variables such as sex, income, and access to healthcare.
 
@@ -10,14 +10,14 @@ Specifically, the data were collected from national health and economic reports 
 
 The primary response variable we chose to analyze is life expectancy in years in 2015, serving as the dependent variable. Two explanatory variables are Schooling (number of years of schooling) and Status (country status, classified as developed or developing). We specifically chose these two because:\
 
-a) education, such as schooling, might be associated with opportunities, health knowledge, and quality of life, which can lead to better access to healthcare and living environments in the future.
-b) the status of a country is directly associated with healthcare facilities, access to clean resources, pollution, and economic factors such as income, which have a great impact on health.
+a)  education, such as schooling, might be associated with opportunities, health knowledge, and quality of life, which can lead to better access to healthcare and living environments in the future.
+b)  the status of a country is directly associated with healthcare facilities, access to clean resources, pollution, and economic factors such as income, which have a great impact on health.
 
 Our study aims to learn more about how schooling is associated with life expectancy and whether life expectancy differs between developed and developing countries. We will conduct statistical summaries, linear regression, and visualizations to evaluate the significance of these relationships. To examine these relationships, a linear regression model will be used to evaluate how schooling and development status are associated with life expectancy.
 
 The motivation for this study is to further understand, based on statistical analysis, whether these two factors have a significant impact on life expectancy across countries. By examining the relationship between schooling, development status, and life expectancy, the results may help identify areas where improvements can be made to better inform policy making and guide efforts aimed at improving public health and overall quality of life, ultimately helping people live longer and healthier lives.
 
-**B) Analysis**
+## Statistical Data Analysis
 
 | Variable              | Count | Median   | Mean     | SD       |
 |-----------------------|-------|----------|----------|----------|
@@ -28,7 +28,7 @@ Status (Categorical): Developed & Developing
 
 The summary statistics show that the average life expectancy across countries is approximately 69.22 years, with a median of 72.10 years and a standard deviation of 9.52 years, indicating moderate variability among countries. The average years of schooling is approximately 11.99 years, with a median of 12.30 years and a standard deviation of 3.36 years, suggesting noticeable differences in education levels across countries.
 
----
+------------------------------------------------------------------------
 
 ## Exploratory Data Analysis
 
@@ -64,7 +64,7 @@ data |>
 
 The scatter plot suggests a **positive relationship** between schooling and life expectancy: countries with higher average years of schooling tend to have higher life expectancy. In addition, developed countries generally appear to cluster in the upper-right portion of the plot, indicating both **higher schooling levels** and **higher life expectancy** compared with developing countries. This pattern suggests that both **Schooling** and **Status** are relevant predictors, and it also motivates considering an **interaction model** to determine whether the relationship between schooling and life expectancy differs by development status.
 
----
+------------------------------------------------------------------------
 
 ## Model 1: Additive Linear Regression
 
@@ -83,6 +83,7 @@ plot(model1$fitted.values, model1$residuals,
      ylab="Residual")
 abline(h=0)
 ```
+
 The residuals vs fitted values plot shows that the residuals are generally scattered around zero without a clear systematic pattern. This suggests that the **linearity assumption** of the regression model is reasonably satisfied. In addition, the spread of the residuals appears relatively constant across the range of fitted values, indicating that the **homoscedasticity (constant variance) assumption** is reasonably met.
 
 ### Model 1: Normal Q–Q Plot
@@ -92,11 +93,12 @@ qqnorm(resid(model1),
        main = "Model 1: Normal Q–Q Plot (Additive Model)")
 qqline(resid(model1))
 ```
+
 The Normal Q–Q plot shows that most residuals lie close to the reference line, suggesting that the residuals are **approximately normally distributed**. Although there are slight deviations in the tails, the overall pattern supports the assumption of normality for the regression residuals.
 
 Overall, the diagnostic plots indicate that the additive regression model provides a **reasonable fit to the data**.
 
----
+------------------------------------------------------------------------
 
 ## Model 2: Interaction Model
 
@@ -105,7 +107,6 @@ Next, we extend the regression model by including an **interaction term between 
 $$
 LifeExpectancy = \beta_0 + \beta_1(Schooling) + \beta_2(Status) + \beta_3(Schooling \times Status) + \epsilon
 $$
-
 
 ### Model 2: Residuals vs Fitted Plot
 
@@ -130,5 +131,3 @@ qqline(resid(model2))
 The Q–Q plot shows that the residuals largely follow the reference line, with minor deviations in the extreme tails. This indicates that the **normality assumption for the residuals is approximately satisfied**.
 
 Overall, the diagnostic plots suggest that the **interaction model also provides an appropriate fit**, and including the interaction term allows us to explore whether the effect of schooling on life expectancy differs by development status.
-
-
