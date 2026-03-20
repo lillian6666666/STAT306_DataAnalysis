@@ -22,10 +22,6 @@ data <- data %>%
 
 data<- data|> select(-Country)|> filter(Year==2015)
 data|> ggplot(aes(x=Schooling, y= LifeExpectancy, color=Status))+geom_point()
-# reg <-lm(Life_Expectancy ~ Schooling *Status, data)
-# summary(reg)
-# qqplot(reg)
-# resid.plot(reg)
 data$Status <- as.factor(data$Status)
 
 # Fit regression(additive)
@@ -56,3 +52,45 @@ abline(h=0)
 # Q-Q plot
 qqnorm(resid(model2),main = "Model 2: Normal Q-Q Plot (Interaction Model)")
 qqline(resid(model2))
+
+## Directly read
+data <- read_csv("https://drive.google.com/uc?export=download&id=1A_Nkqsxh4ymFIJDj7Fbo1SOCoVujhbjb")
+
+data <- data %>%
+  rename(
+    LifeExpectancy = "Life expectancy",
+  ) %>%
+  filter(Year == 2015)
+data_sel <- data %>%
+  select(-Country, -Alcohol, -"Total expenditure") %>%
+  na.omit()
+
+data_sel
+nrow(data_sel)
+
+null_model <- lm(LifeExpectancy ~ 1, data = data_sel)
+full_model <- lm(LifeExpectancy ~ ., data = data_sel)
+library(leaps)
+#forward selection
+forward_model <- step(null_model,
+                      scope = list(lower = ~1, upper = formula(full_model)),
+                      direction = "forward")
+formula(forward_model)
+forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
+summary(forward_model)
+
+#backward selection
+backward_model <- step(
+  full_model,
+  direction = "backward",
+  trace = TRUE
+)
+formula(backward_model)
+
+backward_model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="backward")
+
+summary(backward_model)
+
+
+model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="exhaustive")
+summary(model)
