@@ -131,3 +131,17 @@ qqline(resid(model2))
 The Q–Q plot shows that the residuals largely follow the reference line, with minor deviations in the extreme tails. This indicates that the **normality assumption for the residuals is approximately satisfied**.
 
 Overall, the diagnostic plots suggest that the **interaction model also provides an appropriate fit**, and including the interaction term allows us to explore whether the effect of schooling on life expectancy differs by development status.
+
+### Model 1: Regression Results
+
+The estimated regression model is:
+
+LifeExpectancy = beta0 + beta1\* Schooling + beta2 \* Status
+
+The results form the summary table show that:
+
+-   **Schooling** has a coefficient of 2.098 with p-value, 2e-16, which shows that with increasing of one year of schooling, life expectancy increases by approximately **2.098 years**, holding the other variable constant. This effect is statistically significant.
+
+-   **Status** has a coefficient of -1.826 with p-value equals to 0.104, suggesting that developing countries have lower life expectancy than developed countries on average. However, this effect is **not statistically significant at the 0.05 level**.
+
+The model has **R²** with the value of **0.6745**, indicating that schooling and development status are able to explain approximately **67.45%** of the variation in life expectancy.
