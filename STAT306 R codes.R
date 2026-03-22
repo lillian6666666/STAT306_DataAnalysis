@@ -22,7 +22,6 @@ forward_model <- step(null_model,
                       direction = "forward")
 formula(forward_model)
 forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
-forward_model
 ss = summary(forward_model)
 summary(forward_model)
 metrics = data.frame(
