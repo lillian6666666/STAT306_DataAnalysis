@@ -186,10 +186,8 @@ metrics = data.frame(
 metrics
 ```
 
-From the forward selection results, three predictor model was selected because its Mallows’ value (Cp 3.499) is closest to the number of predictors (k = 3), while the adjusted R\^2 shows slight changes with additional predictors.
-
 ```{r}
-# backward selection
+#backward selection
 backward_model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="backward")
 
 ss2=summary(backward_model)
@@ -200,6 +198,8 @@ metrics_backward = data.frame(
 )
 metrics_backward
 ```
+
+From both the forward and backward selection results, three predictor model was selected because its Mallows’ value (Cp 3.499) is closest to the number of predictors (k = 3), while the adjusted R\^2 (0.8854 at k = 3) shows slight changes with additional predictors.
 
 ### Conclusion
 
