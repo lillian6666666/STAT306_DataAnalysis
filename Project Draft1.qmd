@@ -154,20 +154,41 @@ LifeExpectancy = beta0 + beta1\* Schooling + beta2 \* Status + beta3 \* Schoolin
 
 The results show that:
 
-- The interaction term, **Schooling × StatusDeveloping** has a coefficient of 1.479 with the p-value of 0.006, which is statistically significant. This indicates that the effect of schooling on life expectancy **differs between developed and developing countries**.
+-   The interaction term, **Schooling × StatusDeveloping** has a coefficient of 1.479 with the p-value of 0.006, which is statistically significant. This indicates that the effect of schooling on life expectancy **differs between developed and developing countries**.
 
-- In **developed countries**, which is the baseline group, the effect of schooling is 0.730 with p-value of 0.156, which is not statistically significant at the significance level of 0.05.
+-   In **developed countries**, which is the baseline group, the effect of schooling is 0.730 with p-value of 0.156, which is not statistically significant at the significance level of 0.05.
 
-- In **developing countries**, the effect of schooling becomes:
+-   In **developing countries**, the effect of schooling becomes:
 
-  0.730 + 1.479 = **2.209**
+    0.730 + 1.479 = **2.209**
 
-This indicates that for each additional year of schooling, life expectancy increases by approximately **2.21 years** in developing countries, showing a  stronger association compared to developed countries.
+This indicates that for each additional year of schooling, life expectancy increases by approximately **2.21 years** in developing countries, showing a stronger association compared to developed countries.
 
 -   **Schooling** has a coefficient of 0.7303 with p-value, 0.15584, which shows that with increasing of one year of schooling, life expectancy increases by approximately **0.7303 years**, holding the other variable constant, but it is not statistically significant at the significance level of 0.05.
 
-- The coefficient for StatusDeveloping is -25.805 with the p-value of 0.003 indicates that developing countries have substantially lower life expectancy than developed countries, when keeping the other variables constant.
+-   The coefficient for StatusDeveloping is -25.805 with the p-value of 0.003 indicates that developing countries have substantially lower life expectancy than developed countries, when keeping the other variables constant.
 
 The model has **R²** with the value of **0.6887**, indicating that schooling, the interaction term and development status are able to explain approximately **68.87%** of the variation in life expectancy.
 
 According to the value of the **adj R²**, the model with interaction term has slightly larger value, 0.6832, than the additive model, with the value of the **adj R²**, 0.6707. This suggests that the model with interaction may provide a better fit to the data than the additive model.
+
+### Variable Selection
+
+```{r}
+forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
+ss = summary(forward_model)
+metrics = data.frame(
+  R2 = ss$rsq,
+  AdjR2 = ss$adjr2,
+  Cp = ss$cp
+)
+metrics
+```
+
+From the forward selection results, three predictor model was selected because its Mallows’ value (Cp 3.499) is closest to the number of predictors (k = 3), while the adjusted R\^2 shows slight changes with additional predictors.
+
+### Conclusion
+
+### Statement of AI Use
+
+### Appendix
