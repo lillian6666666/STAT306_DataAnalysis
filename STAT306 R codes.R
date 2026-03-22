@@ -91,3 +91,5 @@ qqline(resid(model2))
 #VIF
 
 vif(model2)
+
+#
