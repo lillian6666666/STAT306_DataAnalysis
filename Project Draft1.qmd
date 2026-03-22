@@ -205,6 +205,15 @@ From both the forward and backward selection results, three predictor model was 
 
 The best three predictors identified for both models are the same: Adult Mortality, Hepatitis B, Income composition of resources.
 
+### Variable Selection
+
+```{r}
+vif(model1)
+vif(model2)
+```
+
+VIF analysis showed that Model 2 contains multicollinearity due to the interaction term, whereas Model 1 had moderate and acceptable multicollinearity of arund 1. Therefore, model 1 was selected, and model 2 (with interaction) is not used.
+
 ### Conclusion
 
 ### Statement of AI Use
