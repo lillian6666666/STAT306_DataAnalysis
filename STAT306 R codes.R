@@ -15,6 +15,12 @@ data_sel
 nrow(data_sel)
 
 library(leaps)
+null_model <- lm(LifeExpectancy ~ 1, data = data_sel)
+full_model <- lm(LifeExpectancy ~ ., data = data_sel)
+forward_model <- step(null_model,
+                      scope = list(lower = ~1, upper = formula(full_model)),
+                      direction = "forward")
+formula(forward_model)
 forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
 forward_model
 ss = summary(forward_model)
@@ -27,6 +33,13 @@ metrics = data.frame(
 metrics
 
 #backward selection
+backward_model <- step(
+  full_model,
+  direction = "backward",
+  trace = TRUE
+)
+formula(backward_model)
+
 backward_model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="backward")
 
 ss2=summary(backward_model)
