@@ -8,7 +8,7 @@ data <- data %>%
   ) %>%
   filter(Year == 2015)
 data_sel <- data %>%
-  select(-Country, -Alcohol, -"Total expenditure") %>%
+  select(-Year, -Country, -Alcohol, -"Total expenditure") %>%
   na.omit()
 
 data_sel
@@ -18,13 +18,13 @@ library(leaps)
 forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
 ss = summary(forward_model)
 summary(forward_model)
-metrics = data.frame(
+matrics = data.frame(
   R2 = ss$rsq,
   AdjR2 = ss$adjr2,
   Cp = ss$cp
 )
-metrics
 
+matrics
 #backward selection
 backward_model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="backward")
 
