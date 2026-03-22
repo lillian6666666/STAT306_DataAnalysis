@@ -175,6 +175,7 @@ According to the value of the **adj R²**, the model with interaction term has s
 ### Variable Selection
 
 ```{r}
+#forward selection
 forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
 ss = summary(forward_model)
 metrics = data.frame(
@@ -186,6 +187,19 @@ metrics
 ```
 
 From the forward selection results, three predictor model was selected because its Mallows’ value (Cp 3.499) is closest to the number of predictors (k = 3), while the adjusted R\^2 shows slight changes with additional predictors.
+
+```{r}
+# backward selection
+backward_model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="backward")
+
+ss2=summary(backward_model)
+metrics_backward = data.frame(
+  R2 = ss2$rsq,
+  AdjR2 = ss2$adjr2,
+  Cp = ss2$cp
+)
+metrics_backward
+```
 
 ### Conclusion
 
