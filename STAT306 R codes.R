@@ -1,7 +1,52 @@
-## Directly read 
 library(tidyverse)
+## Directly read
 data <- read_csv("https://drive.google.com/uc?export=download&id=1A_Nkqsxh4ymFIJDj7Fbo1SOCoVujhbjb")
-data
+
+data <- data %>%
+  rename(
+    LifeExpectancy = "Life expectancy",
+  ) %>%
+  filter(Year == 2015)
+data_sel <- data %>%
+  select(-Country, -Alcohol, -"Total expenditure") %>%
+  na.omit()
+
+data_sel
+nrow(data_sel)
+
+library(leaps)
+forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
+forward_model
+ss = summary(forward_model)
+summary(forward_model)
+metrics = data.frame(
+  R2 = ss$rsq,
+  AdjR2 = ss$adjr2,
+  Cp = ss$cp
+)
+metrics
+
+#backward selection
+backward_model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="backward")
+
+ss2=summary(backward_model)
+ss2
+metrics_backward = data.frame(
+  R2 = ss2$rsq,
+  AdjR2 = ss2$adjr2,
+  Cp = ss2$cp
+)
+metrics_backward
+
+model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="exhaustive")
+summary(model)
+ss3=summary(model)
+metrics1 = data.frame(
+  R2 = ss3$rsq,
+  AdjR2 = ss3$adjr2,
+  Cp = ss3$cp
+)
+metrics1
 
 mean(data$`Life expectancy`, na.rm = TRUE)
 median(data$`Life expectancy`, na.rm = TRUE)
@@ -46,61 +91,3 @@ abline(h=0)
 # Q-Q plot
 qqnorm(resid(model2),main = "Model 2: Normal Q-Q Plot (Interaction Model)")
 qqline(resid(model2))
-
-## Directly read
-data <- read_csv("https://drive.google.com/uc?export=download&id=1A_Nkqsxh4ymFIJDj7Fbo1SOCoVujhbjb")
-
-data <- data %>%
-  rename(
-    LifeExpectancy = "Life expectancy",
-  ) %>%
-  filter(Year == 2015)
-data_sel <- data %>%
-  select(-Country, -Alcohol, -"Total expenditure") %>%
-  na.omit()
-
-data_sel
-nrow(data_sel)
-
-library(leaps)
-#forward selection
-#forward_model <- step(null_model,
-#                      scope = list(lower = ~1, upper = formula(full_model)),
-#                      direction = "forward")
-#formula(forward_model)
-forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
-ss = summary(forward_model)
-metrics = data.frame(
-  R2 = ss$rsq,
-  AdjR2 = ss$adjr2,
-  Cp = ss$cp
-)
-metrics
-
-#backward selection
-#backward_model <- step(
-#  full_model,
-#  direction = "backward",
-#  trace = TRUE
-#)
-#formula(backward_model)
-
-backward_model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="backward")
-
-ss2=summary(backward_model)
-metrics_backward = data.frame(
-  R2 = ss2$rsq,
-  AdjR2 = ss2$adjr2,
-  Cp = ss2$cp
-)
-metrics_backward
-
-model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="exhaustive")
-summary(model)
-ss3=summary(model)
-metrics1 = data.frame(
-  R2 = ss3$rsq,
-  AdjR2 = ss3$adjr2,
-  Cp = ss3$cp
-)
-metrics1
