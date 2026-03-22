@@ -205,7 +205,7 @@ From both the forward and backward selection results, three predictor model was 
 
 The best three predictors identified for both models are the same: Adult Mortality, Hepatitis B, Income composition of resources.
 
-### Variable Selection
+### Model Selection
 
 ```{r}
 vif(model1)
