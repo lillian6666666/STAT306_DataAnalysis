@@ -1,4 +1,5 @@
 library(tidyverse)
+library(leaps)
 ## Directly read
 data <- read_csv("https://drive.google.com/uc?export=download&id=1A_Nkqsxh4ymFIJDj7Fbo1SOCoVujhbjb")
 
@@ -14,7 +15,6 @@ data_sel <- data %>%
 data_sel
 nrow(data_sel)
 
-library(leaps)
 forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
 ss = summary(forward_model)
 summary(forward_model)
@@ -47,23 +47,16 @@ metrics1 = data.frame(
 )
 metrics1
 
-mean(data$`Life expectancy`, na.rm = TRUE)
-median(data$`Life expectancy`, na.rm = TRUE)
-sd(data$`Life expectancy`, na.rm = TRUE)
+mean(data$LifeExpectancy, na.rm = TRUE)
+median(data$LifeExpectancy, na.rm = TRUE)
+sd(data$LifeExpectancy, na.rm = TRUE)
 sum(!is.na(data$Schooling))
 
-# rename variable for easier use
-data <- data %>%
-  rename(
-    LifeExpectancy = "Life expectancy",
-  )
-
-data<- data|> select(-Country)|> filter(Year==2015)
 data|> ggplot(aes(x=Schooling, y= LifeExpectancy, color=Status))+geom_point()
 data$Status <- as.factor(data$Status)
 
-# Fit regression(additive)
-model1 <- lm(LifeExpectancy ~ Schooling + Status, data = data)
+# Fit regression
+model1 <- lm(LifeExpectancy ~ `Income composition of resources`+ `Adult Mortality`+ `Hepatitis B` + Schooling + Status, data = data_sel)
 summary(model1)
 
 # Residuals vs Fitted
@@ -77,8 +70,8 @@ qqnorm(resid(model1),
        main = "Model 1: Normal Q-Q Plot (Additive Model)")
 qqline(resid(model1))
 
-# Fit regression with interaction term
-model2 <- lm(LifeExpectancy ~ Schooling *Status, data = data)
+# Fit regression with interaction term(schooling and status)
+model2 <- lm(LifeExpectancy ~ `Income composition of resources` + `Adult Mortality` + `Hepatitis B` + Schooling *Status, data = data_sel)
 summary(model2)
 
 # Residuals vs Fitted
