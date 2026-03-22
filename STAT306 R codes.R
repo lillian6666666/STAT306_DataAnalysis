@@ -1,5 +1,6 @@
 library(tidyverse)
 library(leaps)
+library(car)
 ## Directly read
 data <- read_csv("https://drive.google.com/uc?export=download&id=1A_Nkqsxh4ymFIJDj7Fbo1SOCoVujhbjb")
 
@@ -70,6 +71,9 @@ qqnorm(resid(model1),
        main = "Model 1: Normal Q-Q Plot (Additive Model)")
 qqline(resid(model1))
 
+#VIF
+vif(model1)
+
 # Fit regression with interaction term(schooling and status)
 model2 <- lm(LifeExpectancy ~ `Income composition of resources` + `Adult Mortality` + `Hepatitis B` + Schooling *Status, data = data_sel)
 summary(model2)
@@ -83,3 +87,7 @@ abline(h=0)
 # Q-Q plot
 qqnorm(resid(model2),main = "Model 2: Normal Q-Q Plot (Interaction Model)")
 qqline(resid(model2))
+
+#VIF
+
+vif(model2)
