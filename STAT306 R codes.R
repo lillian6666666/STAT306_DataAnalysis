@@ -62,14 +62,12 @@ data_sel <- data %>%
 data_sel
 nrow(data_sel)
 
-null_model <- lm(LifeExpectancy ~ 1, data = data_sel)
-full_model <- lm(LifeExpectancy ~ ., data = data_sel)
 library(leaps)
 #forward selection
-forward_model <- step(null_model,
-                      scope = list(lower = ~1, upper = formula(full_model)),
-                      direction = "forward")
-formula(forward_model)
+#forward_model <- step(null_model,
+#                      scope = list(lower = ~1, upper = formula(full_model)),
+#                      direction = "forward")
+#formula(forward_model)
 forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
 ss = summary(forward_model)
 metrics = data.frame(
@@ -80,17 +78,29 @@ metrics = data.frame(
 metrics
 
 #backward selection
-backward_model <- step(
-  full_model,
-  direction = "backward",
-  trace = TRUE
-)
-formula(backward_model)
+#backward_model <- step(
+#  full_model,
+#  direction = "backward",
+#  trace = TRUE
+#)
+#formula(backward_model)
 
 backward_model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="backward")
 
-summary(backward_model)
-
+ss2=summary(backward_model)
+metrics_backward = data.frame(
+  R2 = ss2$rsq,
+  AdjR2 = ss2$adjr2,
+  Cp = ss2$cp
+)
+metrics_backward
 
 model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="exhaustive")
 summary(model)
+ss3=summary(model)
+metrics1 = data.frame(
+  R2 = ss3$rsq,
+  AdjR2 = ss3$adjr2,
+  Cp = ss3$cp
+)
+metrics1
