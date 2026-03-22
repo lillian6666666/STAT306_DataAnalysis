@@ -1,9 +1,3 @@
-## R Source
-
-Life.Expectancy.Data.2 <- read.csv("~/Downloads/Life Expectancy Data 2.csv", 
-                                  header=FALSE)
-Data <- Life.Expectancy.Data.2
-
 ## Directly read 
 library(tidyverse)
 data <- read_csv("https://drive.google.com/uc?export=download&id=1A_Nkqsxh4ymFIJDj7Fbo1SOCoVujhbjb")
@@ -77,7 +71,13 @@ forward_model <- step(null_model,
                       direction = "forward")
 formula(forward_model)
 forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
-summary(forward_model)
+ss = summary(forward_model)
+metrics = data.frame(
+  R2 = ss$rsq,
+  AdjR2 = ss$adjr2,
+  Cp = ss$cp
+)
+metrics
 
 #backward selection
 backward_model <- step(
