@@ -184,6 +184,7 @@ metrics = data.frame(
   Cp = ss$cp
 )
 metrics
+summary(forward_model)$which[3, ]
 ```
 
 ```{r}
@@ -197,9 +198,12 @@ metrics_backward = data.frame(
   Cp = ss2$cp
 )
 metrics_backward
+summary(backward_model)$which[3, ]
 ```
 
-From both the forward and backward selection results, three predictor model was selected because its Mallows’ value (Cp 3.499) is closest to the number of predictors (k = 3), while the adjusted R\^2 (0.8854 at k = 3) shows slight changes with additional predictors.
+From both the forward and backward selection results, three predictor model was selected because its Mallows’ value (Cp 4.629796) is closest to the number of predictors (k = 3), while the adjusted R\^2 (0.8854601 at k = 3) shows slight changes with additional predictors.
+
+The best three predictors identified for both models are the same: Adult Mortality, Hepatitis B, Income composition of resources.
 
 ### Conclusion
 
