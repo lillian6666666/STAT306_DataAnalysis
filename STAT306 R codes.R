@@ -4,6 +4,7 @@ library(car)
 ## Directly read
 data <- read_csv("https://drive.google.com/uc?export=download&id=1A_Nkqsxh4ymFIJDj7Fbo1SOCoVujhbjb")
 
+#data clean
 data <- data %>%
   rename(
     LifeExpectancy = "Life expectancy",
@@ -16,6 +17,62 @@ data_sel <- data %>%
 data_sel
 nrow(data_sel)
 
+data_sel |>
+  ggplot(aes(x = Status, y = LifeExpectancy, fill = Status)) +
+  geom_boxplot() +
+  labs(
+    title = "Life Expectancy by Development Status",
+    x = "Development Status",
+    y = "Life Expectancy (years)"
+  )
+
+data_sel |>
+  ggplot(aes(x = Schooling, y = LifeExpectancy, color = Status)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Life Expectancy vs Schooling by Development Status",
+    x = "Schooling (years)",
+    y = "Life Expectancy (years)"
+  )
+
+#simple model
+# Fit regression
+model1 <- lm(LifeExpectancy ~ Schooling + Status, data = data_sel)
+summary(model1)
+
+# Residuals vs Fitted
+plot(model1$fitted.values, model1$residuals,
+     main = "Model 1: Residuals vs Fitted (Additive Model)",
+     xlab="Fitted value", ylab="Residual")
+abline(h=0)
+
+# Q-Q plot
+qqnorm(resid(model1),
+       main = "Model 1: Normal Q-Q Plot (Additive Model)")
+qqline(resid(model1))
+
+#VIF
+vif(model1)
+
+# Fit regression with interaction term (schooling and status)
+model2 <- lm(LifeExpectancy ~ Schooling *Status, data = data_sel)
+summary(model2)
+
+# Residuals vs Fitted
+plot(model2$fitted.values, model2$residuals,
+     main = "Model 2: Residuals vs Fitted (Interaction Model)",
+     xlab="Fitted value", ylab="Residual")
+abline(h=0)
+
+# Q-Q plot
+qqnorm(resid(model2),
+       main = "Model 2: Normal Q–Q Plot (Additive Model)")
+qqline(resid(model2))
+
+#variable selection
+
+#method 1:forward selection
 forward_model<-regsubsets(LifeExpectancy ~ ., data=data_sel, method="forward")
 ss = summary(forward_model)
 summary(forward_model)
@@ -26,7 +83,7 @@ matrics = data.frame(
 )
 
 matrics
-#backward selection
+#method 2: backward selection
 backward_model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="backward")
 
 ss2=summary(backward_model)
@@ -38,6 +95,7 @@ metrics_backward = data.frame(
 )
 metrics_backward
 
+#method 3: best subset selection
 model <- regsubsets(LifeExpectancy ~ ., data=data_sel, method="exhaustive")
 summary(model)
 ss3=summary(model)
@@ -57,38 +115,38 @@ data|> ggplot(aes(x=Schooling, y= LifeExpectancy, color=Status))+geom_point()
 data$Status <- as.factor(data$Status)
 
 # Fit regression
-model1 <- lm(LifeExpectancy ~ `Income composition of resources`+ `Adult Mortality`+ `Hepatitis B` + Schooling + Status, data = data_sel)
-summary(model1)
+model3 <- lm(LifeExpectancy ~ `Income composition of resources`+ `Adult Mortality`+ `Hepatitis B` + Schooling + Status, data = data_sel)
+summary(model3)
 
 # Residuals vs Fitted
 plot(model1$fitted.values, model1$residuals,
-     main = "Model 1: Residuals vs Fitted (Additive Model)",
+     main = "Model 3: Residuals vs Fitted (Additive Model)",
      xlab="Fitted value", ylab="Residual")
 abline(h=0)
 
 # Q-Q plot
-qqnorm(resid(model1),
-       main = "Model 1: Normal Q-Q Plot (Additive Model)")
-qqline(resid(model1))
+qqnorm(resid(model3),
+       main = "Model 3: Normal Q-Q Plot (Additive Model)")
+qqline(resid(model3))
 
 #VIF
-vif(model1)
+vif(model3)
 
 # Fit regression with interaction term(schooling and status)
-model2 <- lm(LifeExpectancy ~ `Income composition of resources` + `Adult Mortality` + `Hepatitis B` + Schooling *Status, data = data_sel)
-summary(model2)
+model4 <- lm(LifeExpectancy ~ `Income composition of resources` + `Adult Mortality` + `Hepatitis B` + Schooling *Status, data = data_sel)
+summary(model4)
 
 # Residuals vs Fitted
-plot(model2$fitted.values, model2$residuals,
-     main = "Model 2: Residuals vs Fitted (Interaction Model)",
+plot(model4$fitted.values, model2$residuals,
+     main = "Model 4: Residuals vs Fitted (Interaction Model)",
      xlab="Fitted value", ylab="Residual")
 abline(h=0)
 
 # Q-Q plot
-qqnorm(resid(model2),main = "Model 2: Normal Q-Q Plot (Interaction Model)")
-qqline(resid(model2))
+qqnorm(resid(model4),main = "Model 4: Normal Q-Q Plot (Interaction Model)")
+qqline(resid(model4))
 
 #VIF
 
-vif(model2)
+vif(model4)
 
