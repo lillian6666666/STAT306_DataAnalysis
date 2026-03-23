@@ -186,6 +186,10 @@ metrics = data.frame(
   Cp = ss$cp
 )
 metrics
+```
+
+
+```{r}
 summary(forward_model)$which[3, ]
 ```
 
@@ -200,6 +204,9 @@ metrics_backward = data.frame(
   Cp = ss2$cp
 )
 metrics_backward
+```
+
+```{r}
 summary(backward_model)$which[3, ]
 ```
 
@@ -212,6 +219,10 @@ metrics1 = data.frame(
   Cp = ss3$cp
 )
 metrics1
+```
+
+
+```{r}
 summary(model)$which[3, ]
 ```
 
