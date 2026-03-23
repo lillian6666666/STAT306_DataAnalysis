@@ -160,7 +160,7 @@ The results show that:
 
 -   The interaction term, **Schooling × StatusDeveloping** has a coefficient of 1.8892 with the p-value of 0.008, which is statistically significant. This indicates that the effect of schooling on life expectancy **differs between developed and developing countries**.
 
--   In **developed countries**, which is the baseline group, the effect of schooling is 0.4622 with p-value of 0.49773, which shows that with increasing of one year of schooling, life expectancy increases by approximately **0.4622 years**, holding the other variable constant, but it is not statistically significant at the significance level of 0.05.
+-   In **developed countries**, which is the baseline group, **schooling**, the effect of schooling is 0.4622 with p-value of 0.49773, which shows that with increasing of one year of schooling, life expectancy increases by approximately **0.4622 years**, holding the other variable constant, but it is not statistically significant at the significance level of 0.05.
 
 -   In **developing countries**, the effect of schooling becomes:
 
@@ -317,13 +317,9 @@ In contrast:
 - **Schooling** is not statistically significant with the p-value 0.727 at the 0.05 significant level.
 - **Status** is also not statistically significant with the p-value of 0.860 at the 0.05 significant level.
 
-This suggests that, after controlling for other variables, the effects of schooling and development status may be captured by broader socioeconomic indicators such as income composition of resources.
+This suggests that, after controlling for other variables, the effects of schooling and development status may be captured by other factors.
 
-The model explains a large proportion of the variation in life expectancy, with an **R² of 0.8882** and an **adjusted R² of 0.8837**, indicating an excellent fit.
-
-The overall model is highly statistically significant (F-statistic p < 0.001).
-
-The model has **R²** with the value of **0.6745**, indicating that schooling and development status are able to explain approximately **67.45%** of the variation in life expectancy.
+The model has **R²** with the value of **0.8882**, indicating that schooling and development status are able to explain approximately **88.82%** of the variation in life expectancy.
 
 ------------------------------------------------------------------------
 
@@ -331,23 +327,27 @@ The model has **R²** with the value of **0.6745**, indicating that schooling an
 
 The results show that:
 
--   The interaction term, **Schooling × StatusDeveloping** has a coefficient of 1.479 with the p-value of 0.006, which is statistically significant. This indicates that the effect of schooling on life expectancy **differs between developed and developing countries**.
+-   The interaction term, **Schooling × StatusDeveloping** has a coefficient of 0.420854 with the p-value of 0.343, which is not statistically significant. This indicates that the effect of schooling on life expectancy **no significant differs between developed and developing countries**.
 
--   In **developed countries**, which is the baseline group, the effect of schooling is 0.730 with p-value of 0.156, which is not statistically significant at the significance level of 0.05.
+-   In **developed countries**, which is the baseline group, **schooling**, the effect of schooling is -0.401156 with p-value of 0.328, which is not statistically significant at the significance level of 0.05.
 
 -   In **developing countries**, the effect of schooling becomes:
 
-    0.730 + 1.479 = **2.209**
+     -0.401 + 0.421 = **0.020**
 
-This indicates that for each additional year of schooling, life expectancy increases by approximately **2.21 years** in developing countries, showing a stronger association compared to developed countries.
+This indicates that for each additional year of schooling, life expectancy increases by approximately **0.020 years** in developing countries, this effect is also very small and not statistically significant.
 
--   **Schooling** has a coefficient of 0.7303 with p-value, 0.15584, which shows that with increasing of one year of schooling, life expectancy increases by approximately **0.7303 years**, holding the other variable constant, but it is not statistically significant at the significance level of 0.05.
+-   The coefficient for **StatusDeveloping** is -6.927564 with the p-value of 0.336 indicating that, when keeping other variables constant, developing countries have lower life expectancy than developed countries. But this effect is not statistically significan.
 
--   The coefficient for StatusDeveloping is -25.805 with the p-value of 0.003 indicates that developing countries have substantially lower life expectancy than developed countries, when keeping the other variables constant.
+- **Income composition of resources** has a strong positive association with life expectancy with a small p-value, which is smaller than 0.001. This shows that with increasing of one unit of income composition of resources, life expectancy increases by approximately **35.209552 years**, holding the other variable constant. This effect is statistically significant.
 
-The model has **R²** with the value of **0.6887**, indicating that schooling, the interaction term and development status are able to explain approximately **68.87%** of the variation in life expectancy.
+- **Adult mortality** has a significant negative association with a small p-value, which is smaller than 0.001. This suggests that with increasing of one unit of adult mortality, life expectancy decreases by approximately **0.025527 years**, holding the other variable constant. This effect is statistically significant
 
-According to the value of the **adj R²**, the model with interaction term has slightly larger value, 0.6832, than the additive model, with the value of the **adj R²**, 0.6707. This suggests that the model with interaction may provide a better fit to the data than the additive model.
+- **Hepatitis B immunization** is positively associated with life expectancy with a small p-value, which is smaller than 0.001. This indicates that with increasing of one unit of Hepatitis B immunization, life expectancy increases by approximately **0.045799 years**, holding the other variable constant. This effect is statistically significant
+
+The model has **R²** with the value of **0.8891**, indicating that schooling, the interaction term and development status are able to explain approximately **88.91%** of the variation in life expectancy.
+
+According to the value of the **adj R²**, the new model with the other three predictors has slightly larger value, 0.8837, than the first two simple model that only contains schooling and status. This suggests that the model with the other three predictors may provide a better fit to the data than the first two simple model.
 
 ------------------------------------------------------------------------
 
