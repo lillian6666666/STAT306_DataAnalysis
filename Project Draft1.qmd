@@ -140,7 +140,6 @@ model1 <- lm(LifeExpectancy ~ Schooling + Status, data = data_sel)
 summary(model1)
 ```
 
-
 The results form the summary table show that:
 
 -   **Schooling** has a coefficient of 2.098 with p-value, 2e-16, which shows that with increasing of one year of schooling, life expectancy increases by approximately **2.226 years**, holding the other variable constant. This effect is statistically significant.
@@ -188,7 +187,6 @@ metrics = data.frame(
 metrics
 ```
 
-
 ```{r}
 summary(forward_model)$which[3, ]
 ```
@@ -220,7 +218,6 @@ metrics1 = data.frame(
 )
 metrics1
 ```
-
 
 ```{r}
 summary(model)$which[3, ]
@@ -299,6 +296,7 @@ The Q–Q plot shows that the residuals largely follow the reference line, with 
 Overall, the diagnostic plots suggest that the **interaction model also provides an appropriate fit**, and including the interaction term allows us to explore whether the effect of schooling on life expectancy differs by development status.
 
 ## Model 3: Regression Results
+
 ```{r}
 model3 <- lm(LifeExpectancy ~ `Income composition of resources`+ `Adult Mortality`+ `Hepatitis B` + Schooling + Status, data = data_sel)
 summary(model3)
@@ -306,16 +304,16 @@ summary(model3)
 
 The results from the summary table show that:
 
-- **Income composition of resources** has a strong positive association with life expectancy with a small p-value, which is smaller than 0.001. This shows that with increasing of one unit of income composition of resources, life expectancy increases by approximately **36.81 years**, holding the other variable constant. This effect is statistically significant.
+-   **Income composition of resources** has a strong positive association with life expectancy with a small p-value, which is smaller than 0.001. This shows that with increasing of one unit of income composition of resources, life expectancy increases by approximately **36.81 years**, holding the other variable constant. This effect is statistically significant.
 
-- **Adult mortality** has a significant negative association with a small p-value, which is smaller than 0.001. This suggests that with increasing of one unit of adult mortality, life expectancy decreases by approximately **0.025 years**, holding the other variable constant. This effect is statistically significant
+-   **Adult mortality** has a significant negative association with a small p-value, which is smaller than 0.001. This suggests that with increasing of one unit of adult mortality, life expectancy decreases by approximately **0.025 years**, holding the other variable constant. This effect is statistically significant
 
-- **Hepatitis B immunization** is positively associated with life expectancy with a small p-value, which is smaller than 0.001. This indicates that with increasing of one unit of Hepatitis B immunization, life expectancy increases by approximately **0.046 years**, holding the other variable constant. This effect is statistically significant
+-   **Hepatitis B immunization** is positively associated with life expectancy with a small p-value, which is smaller than 0.001. This indicates that with increasing of one unit of Hepatitis B immunization, life expectancy increases by approximately **0.046 years**, holding the other variable constant. This effect is statistically significant
 
 In contrast:
 
-- **Schooling** is not statistically significant with the p-value 0.727 at the 0.05 significant level.
-- **Status** is also not statistically significant with the p-value of 0.860 at the 0.05 significant level.
+-   **Schooling** is not statistically significant with the p-value 0.727 at the 0.05 significant level.
+-   **Status** is also not statistically significant with the p-value of 0.860 at the 0.05 significant level.
 
 This suggests that, after controlling for other variables, the effects of schooling and development status may be captured by other factors.
 
@@ -333,17 +331,17 @@ The results show that:
 
 -   In **developing countries**, the effect of schooling becomes:
 
-     -0.401 + 0.421 = **0.020**
+    -0.401 + 0.421 = **0.020**
 
 This indicates that for each additional year of schooling, life expectancy increases by approximately **0.020 years** in developing countries, this effect is also very small and not statistically significant.
 
 -   The coefficient for **StatusDeveloping** is -6.927564 with the p-value of 0.336 indicating that, when keeping other variables constant, developing countries have lower life expectancy than developed countries. But this effect is not statistically significan.
 
-- **Income composition of resources** has a strong positive association with life expectancy with a small p-value, which is smaller than 0.001. This shows that with increasing of one unit of income composition of resources, life expectancy increases by approximately **35.209552 years**, holding the other variable constant. This effect is statistically significant.
+-   **Income composition of resources** has a strong positive association with life expectancy with a small p-value, which is smaller than 0.001. This shows that with increasing of one unit of income composition of resources, life expectancy increases by approximately **35.209552 years**, holding the other variable constant. This effect is statistically significant.
 
-- **Adult mortality** has a significant negative association with a small p-value, which is smaller than 0.001. This suggests that with increasing of one unit of adult mortality, life expectancy decreases by approximately **0.025527 years**, holding the other variable constant. This effect is statistically significant
+-   **Adult mortality** has a significant negative association with a small p-value, which is smaller than 0.001. This suggests that with increasing of one unit of adult mortality, life expectancy decreases by approximately **0.025527 years**, holding the other variable constant. This effect is statistically significant
 
-- **Hepatitis B immunization** is positively associated with life expectancy with a small p-value, which is smaller than 0.001. This indicates that with increasing of one unit of Hepatitis B immunization, life expectancy increases by approximately **0.045799 years**, holding the other variable constant. This effect is statistically significant
+-   **Hepatitis B immunization** is positively associated with life expectancy with a small p-value, which is smaller than 0.001. This indicates that with increasing of one unit of Hepatitis B immunization, life expectancy increases by approximately **0.045799 years**, holding the other variable constant. This effect is statistically significant
 
 The model has **R²** with the value of **0.8891**, indicating that schooling, the interaction term and development status are able to explain approximately **88.91%** of the variation in life expectancy.
 
@@ -361,6 +359,10 @@ vif(model2)
 VIF analysis showed that Model 2 contains multicollinearity due to the interaction term, whereas Model 1 had moderate and acceptable multicollinearity of arund 1. Therefore, model 1 was selected, and model 2 (with interaction) is not used.
 
 ## Conclusion
+
+In this study, we applied statistical modeling and analysis to explore how schooling and development status are associated with life expectancy using the WHO Life Expectancy dataset. Regression Model 1 suggested that schooling had a positive relationship with life expectancy, where higher education levels were associated with greater life expectancy. The interaction model (Model 2) initially suggested that this relationship appeared stronger in developing countries than in developed countries. However, after model selection using forward and backward selection and adding additional predictors such as income composition of resources, adult mortality, and Hepatitis B immunization, the effects of both schooling and development status were no longer statistically significant (Model 3). Instead, income composition of resources and Hepatitis B immunization showed strong positive associations with life expectancy, while adult mortality showed a strong negative association (Modle 4). These results suggest that life expectancy is influenced more directly by economic and health related conditions rather than schooling and development status alone, reflecting the combined impact of broader social, medical, and national factors.
+
+In conclusion, schooling and development status initially showed to be associated with life expectancy, but the final regression model showed that their effects were not statistically significant after accounting for other factors. This result indicates that life expectancy is more strongly related to variables like income composition of resources, adult mortality, and Hepatitis B immunization.
 
 ## Statement of AI Use
 
