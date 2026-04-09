@@ -116,23 +116,23 @@ We remove variables not used in the current analysis (`Year`, `Country`, `Alcoho
 
 ## Variables of Interest
 
-| Variable | Type | Description |
-|---|---|---|
-| **LifeExpectancy** | Quantitative | Average number of years a newborn is expected to live under current mortality conditions |
-| **Schooling** | Quantitative | Average number of years of schooling among adults |
-| **Status** | Categorical | Country development classification: Developed or Developing |
-| **Adult Mortality** | Quantitative | Probability of dying between ages 15 and 60 per 1000 population |
-| **Hepatitis B** | Quantitative | Percentage of one-year-olds immunized against Hepatitis B |
-| **Income composition of resources** | Quantitative | Index measuring the distribution of income and resources |
+| Variable                            | Type         | Description                                                                              |
+|------------------------|------------------------|------------------------|
+| **LifeExpectancy**                  | Quantitative | Average number of years a newborn is expected to live under current mortality conditions |
+| **Schooling**                       | Quantitative | Average number of years of schooling among adults                                        |
+| **Status**                          | Categorical  | Country development classification: Developed or Developing                              |
+| **Adult Mortality**                 | Quantitative | Probability of dying between ages 15 and 60 per 1000 population                          |
+| **Hepatitis B**                     | Quantitative | Percentage of one-year-olds immunized against Hepatitis B                                |
+| **Income composition of resources** | Quantitative | Index measuring the distribution of income and resources                                 |
 
 ## Data Cleaning
 
 The following data cleaning steps were performed:
 
-1. Filtered observations to retain only **2015** data.
-2. Removed `Year`, `Country`, `Alcohol`, and `Total expenditure`.
-3. Excluded observations with missing values using listwise deletion.
-4. Converted `Status` to a factor for categorical analysis.
+1.  Filtered observations to retain only **2015** data.
+2.  Removed `Year`, `Country`, `Alcohol`, and `Total expenditure`.
+3.  Excluded observations with missing values using listwise deletion.
+4.  Converted `Status` to a factor for categorical analysis.
 
 ## Statistical Summary
 
@@ -178,14 +178,15 @@ The scatter plot suggests a positive relationship between schooling and life exp
 
 ## Preliminary Regression Analysis
 
+We now move from exploratory data analysis to statistical modelling. The previous section focuses on visualizing patterns and relationships in the data; this section uses linear regression and models to evaluate the relationship between schooling and life expectancy. In this section, we will fit preliminary regression models to understand the relationship between schooling and life expectancy and to explore whether this relationship is impacted by development status. We first consider an additive model, followed by an interaction model.
+
 We first fit two simple models using only the variables directly named in the research question.
 
 ### Model 1: Additive Model
 
 $$
 \text{LifeExpectancy} = \beta_0 + \beta_1(\text{Schooling}) + \beta_2(\text{Status}) + \epsilon
-$$
-For the schooling effect in Model 1, we test:
+$$ For the schooling effect in Model 1, we test:
 
 $$
 H_0:\beta_1 = 0 \qquad \text{vs} \qquad H_A:\beta_1 \ne 0
@@ -203,14 +204,13 @@ kable(coef_m1, caption = "Model 1 coefficient estimates")
 
 Model 1 shows a strong positive association between schooling and life expectancy. The coefficient for **Schooling** is **2.2260** with a p-value less than 0.001, suggesting that, holding status constant, an additional year of schooling is associated with an increase of about **2.23 years** in life expectancy. The coefficient for **StatusDeveloping** is negative but not statistically significant at the 0.05 level.
 
-Model 1 has an \(R^2\) of **0.6533** and an adjusted \(R^2\) of **0.6478**.
+Model 1 has an (R\^2) of **0.6533** and an adjusted (R\^2) of **0.6478**.
 
 ### Model 2: Interaction Model
 
 $$
 \text{LifeExpectancy} = \beta_0 + \beta_1(\text{Schooling}) + \beta_2(\text{Status}) + \beta_3(\text{Schooling} \times \text{Status}) + \epsilon
-$$
-For the interaction term in Model 2, we test:
+$$ For the interaction term in Model 2, we test:
 
 $$
 H_0:\beta_3 = 0 \qquad \text{vs} \qquad H_A:\beta_3 \ne 0
@@ -220,13 +220,13 @@ $$
 kable(coef_m2, caption = "Model 2 coefficient estimates")
 ```
 
-In Model 2, the interaction term **Schooling × StatusDeveloping** is statistically significant (p = **0.0082**), suggesting that in this simple model the effect of schooling appears to differ by development status. For developed countries, the schooling slope is **0.4622**, while for developing countries the slope is **0.4622 + 1.8892 = 2.3514**. Model 2 has a slightly larger adjusted \(R^2\) (**0.6643**) than Model 1.
+In Model 2, the interaction term **Schooling × StatusDeveloping** is statistically significant (p = **0.0082**), suggesting that in this simple model the effect of schooling appears to differ by development status. For developed countries, the schooling slope is **0.4622**, while for developing countries the slope is **0.4622 + 1.8892 = 2.3514**. Model 2 has a slightly larger adjusted (R\^2) (**0.6643**) than Model 1.
 
 These preliminary results suggest a possible interaction, but they do not account for additional confounding variables. We therefore next perform variable selection and refit the models with selected controls.
 
 ## Variable Selection
 
-To identify a reasonable set of control variables, we applied forward selection, backward selection, and exhaustive best subset selection using `regsubsets()`. We focus on Mallows’ \(C_p\) together with adjusted \(R^2\). In the exhaustive search results below, the three-predictor model has \(C_p = 4.6298\), which is closest to the target value \(p = k+1 = 4\), while adjusted \(R^2\) changes only modestly as additional predictors are added.
+To identify a reasonable set of control variables, we applied forward selection, backward selection, and exhaustive best subset selection using `regsubsets()`. We focus on Mallows’ (C_p) together with adjusted (R\^2). In the exhaustive search results below, the three-predictor model has (C_p = 4.6298), which is closest to the target value (p = k+1 = 4), while adjusted (R\^2) changes only modestly as additional predictors are added.
 
 ```{r}
 kable(cp_table, caption = "Exhaustive subset selection results")
@@ -234,9 +234,9 @@ kable(cp_table, caption = "Exhaustive subset selection results")
 
 Across the forward, backward, and exhaustive procedures, the same three control variables were identified for the three-predictor model:
 
-- **Adult Mortality**
-- **Hepatitis B**
-- **Income composition of resources**
+-   **Adult Mortality**
+-   **Hepatitis B**
+-   **Income composition of resources**
 
 These were retained as control variables in the final stage of the analysis.
 
@@ -267,21 +267,21 @@ kable(coef_m3, caption = "Model 3 coefficient estimates")
 
 IThe results from Model 3 indicate that the selected control variables are all statistically significant and have meaningful associations with life expectancy.
 
-- **Income composition of resources** has a strong positive coefficient (**36.81**, p < 0.001). This suggests that, holding all other variables constant, an increase in this index is associated with a substantial increase in life expectancy. Since this variable captures broader socioeconomic conditions, this result highlights the importance of economic development and resource distribution in determining population health.
+-   **Income composition of resources** has a strong positive coefficient (**36.81**, p \< 0.001). This suggests that, holding all other variables constant, an increase in this index is associated with a substantial increase in life expectancy. Since this variable captures broader socioeconomic conditions, this result highlights the importance of economic development and resource distribution in determining population health.
 
-- **Adult Mortality** has a statistically significant negative coefficient (**-0.0252**, p < 0.001). This indicates that higher adult mortality rates are associated with lower life expectancy, which is consistent with expectations, as this variable directly reflects population health risks.
+-   **Adult Mortality** has a statistically significant negative coefficient (**-0.0252**, p \< 0.001). This indicates that higher adult mortality rates are associated with lower life expectancy, which is consistent with expectations, as this variable directly reflects population health risks.
 
-- **Hepatitis B immunization** has a positive and statistically significant coefficient (**0.0458**, p < 0.001). This suggests that higher immunization coverage is associated with increased life expectancy, reflecting the role of preventive healthcare and public health interventions.
+-   **Hepatitis B immunization** has a positive and statistically significant coefficient (**0.0458**, p \< 0.001). This suggests that higher immunization coverage is associated with increased life expectancy, reflecting the role of preventive healthcare and public health interventions.
 
 However, after controlling for these variables:
 
-- **Schooling** is no longer statistically significant (p = **0.727**). We fail to reject the null hypothesis $H_0: \beta_{\text{Schooling}} = 0$, indicating that there is no evidence of an independent association between schooling and life expectancy once these control variables are included.
+-   **Schooling** is no longer statistically significant (p = **0.727**). We fail to reject the null hypothesis $H_0: \beta_{\text{Schooling}} = 0$, indicating that there is no evidence of an independent association between schooling and life expectancy once these control variables are included.
 
-- **Status** is also not statistically significant (p = **0.860**). We fail to reject the null hypothesis $H_0: \beta_{\text{Status}} = 0$, suggesting that, conditional on the included controls, there is no statistically significant difference in life expectancy between developed and developing countries.
+-   **Status** is also not statistically significant (p = **0.860**). We fail to reject the null hypothesis $H_0: \beta_{\text{Status}} = 0$, suggesting that, conditional on the included controls, there is no statistically significant difference in life expectancy between developed and developing countries.
 
 This change compared to the preliminary models suggests that the apparent relationship between schooling (and development status) and life expectancy may be explained by confounding variables such as economic conditions, mortality rates, and immunization coverage. In other words, schooling may be indirectly related to life expectancy through these factors rather than having a direct effect.
 
-The model has an \(R^2\) of **0.8882** and an adjusted \(R^2\) of **0.8837**, indicating that approximately **88.8%** of the variation in life expectancy is explained by the variables included in the model. This high explanatory power suggests that the selected variables capture key determinants of life expectancy at the country level.
+The model has an (R\^2) of **0.8882** and an adjusted (R\^2) of **0.8837**, indicating that approximately **88.8%** of the variation in life expectancy is explained by the variables included in the model. This high explanatory power suggests that the selected variables capture key determinants of life expectancy at the country level.
 
 ### Model 4: Interaction Model with Controls
 
@@ -304,9 +304,9 @@ $$
 kable(coef_m4, caption = "Model 4 coefficient estimates")
 ```
 
-In Model 4, the interaction term **Schooling × StatusDeveloping** is not statistically significant (p = **0.343**). The adjusted \(R^2\) is **0.8837**, essentially identical to Model 3. Thus, after controlling for adult mortality, Hepatitis B immunization, and income composition, there is no evidence that the relationship between schooling and life expectancy differs between developed and developing countries.
+In Model 4, the interaction term **Schooling × StatusDeveloping** is not statistically significant (p = **0.343**). The adjusted (R\^2) is **0.8837**, essentially identical to Model 3. Thus, after controlling for adult mortality, Hepatitis B immunization, and income composition, there is no evidence that the relationship between schooling and life expectancy differs between developed and developing countries.
 
-Because the interaction is not significant and the adjusted \(R^2\) does not improve, we select **Model 3** as the final model by the principle of parsimony.
+Because the interaction is not significant and the adjusted (R\^2) does not improve, we select **Model 3** as the final model by the principle of parsimony.
 
 ## Diagnostics and Multicollinearity
 
@@ -354,7 +354,7 @@ Generative AI was used to assist with language revision, grammar checking, and f
 
 ## AI Prompts Used
 
-1. "Help me improve the grammar and clarity of this paragraph."
-2. "Can you help me format the regression coefficient table for a report?"
+1.  "Help me improve the grammar and clarity of this paragraph."
+2.  "Can you help me format the regression coefficient table for a report?"
 
 All AI-generated suggestions were reviewed and edited by the group before inclusion in the final report.
