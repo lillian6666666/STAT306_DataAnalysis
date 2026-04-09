@@ -285,6 +285,8 @@ The model has an \(R^2\) of **0.8882** and an adjusted \(R^2\) of **0.8837**, in
 
 ### Model 4: Interaction Model with Controls
 
+We specifically examined the interaction between educational achievement and development level, as our research question directly addresses whether the relationship between educational achievement and life expectancy differs between developed and developing countries. We did not include interaction terms involving control variables, as doing so would significantly increase the model’s complexity, reduce its interpretability, and stray from the core issues of primary concern. Our objective is to determine whether the impact of educational achievement varies across different levels of development.
+
 $$
 \begin{aligned}
 \text{LifeExpectancy} = &\beta_0 + \beta_1(\text{Income composition}) + \beta_2(\text{Adult Mortality}) + \beta_3(\text{Hepatitis B}) \\
