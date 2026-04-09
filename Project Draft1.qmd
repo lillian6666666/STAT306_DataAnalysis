@@ -2,7 +2,7 @@
 
 ## Introduction
 
-1.Life expectancy is an important indicator of a country's overall health and socioeconomic development. With Canada having an average of 82.2 years in 2024 (Statistics Canada, 2026), this provides residents with an indication of wellbeing based on solid statistics. Life expectancy is the average number of years a person is expected to live under current mortality conditions, which might be affected by different variables such as sex, income, and access to healthcare.
+1.Life expectancy is an important indicator of a country's overall health and socioeconomic development. With Canada having an average of 82.2 years in 2024 (Statistics Canada, 2026), this provides residents with an indication of well-being based on solid statistics. Life expectancy is the average number of years a person is expected to live under current mortality conditions, which might be affected by different variables such as sex, income, and access to healthcare.
 
 We will use the Life Expectancy (WHO) dataset from Kaggle, compiled from the WHO Global Health Observatory and UN economic data. It contains annual observations from 2000 to 2015 for 193 countries, covering health, demographic, socioeconomic, and immunization indicators (22 variables, 2938 observations).
 
@@ -37,6 +37,7 @@ We begin by exploring the relationship between schooling and life expectancy, as
 ### Life Expectancy by Development Status
 
 ```{r}
+library(ggplot2)
 data_sel |>
   ggplot(aes(x = Status, y = LifeExpectancy, fill = Status)) +
   geom_boxplot() +
