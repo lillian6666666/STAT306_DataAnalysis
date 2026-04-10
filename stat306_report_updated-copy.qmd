@@ -172,7 +172,7 @@ ggplot(data_sel, aes(x = Status, y = LifeExpectancy, fill = Status)) +
   theme(legend.position = "none")
 ```
 
-The boxplot suggests that developed countries tend to have higher life expectancy than developing countries, although there is overlap between the two groups.
+The boxplot suggests that developed countries tend to have higher life expectancy than developing countries, although there is overlap between the two groups. After a closer examination, we pinpointed the source of this overlap. As of 2015, the category of "Developing countries" contain both countries that struggle with basic health insurance and now "developed countries" such as Canada, making the variation in life expectancy in devloping countries high and creating the overlap between the two statues.
 
 ```{r fig.height=3.5, fig.width=5.4}
 ggplot(data_sel, aes(x = Schooling, y = LifeExpectancy, color = Status)) +
