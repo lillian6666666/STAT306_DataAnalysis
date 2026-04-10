@@ -70,7 +70,7 @@ For this analysis, we focus on data from **2015**, the most recent year availabl
 ### Variables of Interest
 
 | Variable | Type | Description |
-|---|---|---|
+|----|----|----|
 | **LifeExpectancy** (Response) | Quantitative | Average number of years a newborn is expected to live under current mortality conditions |
 | **Schooling** (Primary predictor) | Quantitative | Average number of years of schooling among adults |
 | **Status** (Primary predictor) | Categorical | Country development classification: Developed or Developing |
@@ -82,10 +82,10 @@ For this analysis, we focus on data from **2015**, the most recent year availabl
 
 The following data cleaning steps were performed:
 
-1. Filtered observations to retain only **2015** data.
-2. Removed variables not used in the current analysis (`Year`, `Country`, `Alcohol`, and `Total expenditure`).
-3. Excluded observations with missing values using listwise deletion.
-4. Converted `Status` to a factor for categorical analysis.
+1.  Filtered observations to retain only **2015** data.
+2.  Removed variables not used in the current analysis (`Year`, `Country`, `Alcohol`, and `Total expenditure`).
+3.  Excluded observations with missing values using listwise deletion.
+4.  Converted `Status` to a factor for categorical analysis.
 
 # Exploratory Data Analysis
 
@@ -159,9 +159,9 @@ kable(cp_table, caption = "Mallows' Cp Values for Exhaustive Subset Selection")
 
 The **3-variable model** has a $C_p$ value of **4.63**, which is closest to $p = 4$, indicating it is the optimal model according to Mallows' $C_p$ criterion. The selected control variables are:
 
-- **Adult Mortality**: a key indicator of population health  
-- **Hepatitis B**: represents immunization coverage and healthcare access  
-- **Income composition of resources**: captures socioeconomic conditions  
+-   **Adult Mortality**: a key indicator of population health\
+-   **Hepatitis B**: represents immunization coverage and healthcare access\
+-   **Income composition of resources**: captures socioeconomic conditions
 
 These three variables were retained as controls in all subsequent regression models.
 
@@ -200,25 +200,25 @@ par(mfrow = c(1, 1))
 
 For each coefficient, we test:
 
-- $H_0: \beta_j = 0$ (no effect on life expectancy)
-- $H_1: \beta_j \neq 0$ (significant effect)
+-   $H_0: \beta_j = 0$ (no effect on life expectancy)
+-   $H_1: \beta_j \neq 0$ (significant effect)
 
 | Variable | Estimate | Std. Error | t-value | p-value | Decision |
-|----------|----------|------------|---------|---------|----------|
-| (Intercept) | 47.381 | 2.206 | 21.483 | < 0.001 | Reject $H_0$ |
-| Income composition | 36.807 | 4.611 | 7.983 | < 0.001 | Reject $H_0$ |
-| Adult Mortality | -0.025 | 0.003 | -8.217 | < 0.001 | Reject $H_0$ |
-| Hepatitis B | 0.046 | 0.010 | 4.532 | < 0.001 | Reject $H_0$ |
-| Schooling | -0.081 | 0.233 | -0.349 | 0.727 | **Fail to reject $H_0$** |
-| StatusDeveloping | -0.144 | 0.810 | -0.177 | 0.860 | **Fail to reject $H_0$** |
+|----|----|----|----|----|----|
+| (Intercept) | 47.381 | 2.206 | 21.483 | \< 0.001 | Reject $H_0$ |
+| Income composition | 36.807 | 4.611 | 7.983 | \< 0.001 | Reject $H_0$ |
+| Adult Mortality | -0.025 | 0.003 | -8.217 | \< 0.001 | Reject $H_0$ |
+| Hepatitis B | 0.046 | 0.010 | 4.532 | \< 0.001 | Reject $H_0$ |
+| Schooling | -0.081 | 0.233 | -0.349 | 0.727 | **Fail to reject** $H_0$ |
+| StatusDeveloping | -0.144 | 0.810 | -0.177 | 0.860 | **Fail to reject** $H_0$ |
 
 **Overall Model Fit**
 
-- Multiple R-squared: **0.8882**
-- Adjusted R-squared: **0.8837**
-- F-statistic: 197.1 on 5 and 124 DF, p-value: < 2.2e-16
+-   Multiple R-squared: **0.8882**
+-   Adjusted R-squared: **0.8837**
+-   F-statistic: 197.1 on 5 and 124 DF, p-value: \< 2.2e-16
 
-The significant F-test (p < 0.001) indicates that the model as a whole explains a substantial portion of the variation in life expectancy. The non-significant coefficients for Schooling (p = 0.727) and Status (p = 0.860) suggest that, after controlling for adult mortality, Hepatitis B vaccination, and income composition, these variables do not have statistically significant independent effects on life expectancy.
+The significant F-test (p \< 0.001) indicates that the model as a whole explains a substantial portion of the variation in life expectancy. The non-significant coefficients for Schooling (p = 0.727) and Status (p = 0.860) suggest that, after controlling for adult mortality, Hepatitis B vaccination, and income composition, these variables do not have statistically significant independent effects on life expectancy.
 
 ## Model 2: Interaction Model
 
@@ -255,31 +255,31 @@ par(mfrow = c(1, 1))
 
 To answer whether the association between schooling and life expectancy differs by development status, we test:
 
-- $H_0: \beta_6 = 0$ (no difference between developed and developing countries)
-- $H_1: \beta_6 \neq 0$ (the effect differs)
+-   $H_0: \beta_6 = 0$ (no difference between developed and developing countries)
+-   $H_1: \beta_6 \neq 0$ (the effect differs)
 
 | Variable | Estimate | Std. Error | t-value | p-value | Decision |
-|----------|----------|------------|---------|---------|----------|
-| (Intercept) | 54.006 | 7.296 | 7.402 | < 0.001 | Reject $H_0$ |
-| Income composition | 35.210 | 4.908 | 7.174 | < 0.001 | Reject $H_0$ |
-| Adult Mortality | -0.026 | 0.003 | -8.268 | < 0.001 | Reject $H_0$ |
-| Hepatitis B | 0.046 | 0.010 | 4.535 | < 0.001 | Reject $H_0$ |
+|----|----|----|----|----|----|
+| (Intercept) | 54.006 | 7.296 | 7.402 | \< 0.001 | Reject $H_0$ |
+| Income composition | 35.210 | 4.908 | 7.174 | \< 0.001 | Reject $H_0$ |
+| Adult Mortality | -0.026 | 0.003 | -8.268 | \< 0.001 | Reject $H_0$ |
+| Hepatitis B | 0.046 | 0.010 | 4.535 | \< 0.001 | Reject $H_0$ |
 | Schooling | -0.401 | 0.409 | -0.982 | 0.328 | Fail to reject $H_0$ |
 | StatusDeveloping | -6.928 | 7.167 | -0.967 | 0.336 | Fail to reject $H_0$ |
-| **Schooling:StatusDeveloping** | 0.421 | 0.442 | 0.953 | **0.343** | **Fail to reject $H_0$** |
+| **Schooling:StatusDeveloping** | 0.421 | 0.442 | 0.953 | **0.343** | **Fail to reject** $H_0$ |
 
 **Interpretation of the Interaction**
 
 The interaction term has a p-value of **0.343**, which is greater than 0.05. Therefore, we fail to reject the null hypothesis. There is **no sufficient evidence** that the effect of schooling on life expectancy differs between developed and developing countries.
 
-- For **developed countries** (baseline): effect of schooling = -0.401 (p = 0.328, not significant)
-- For **developing countries**: effect of schooling = -0.401 + 0.421 = 0.020 (not significant)
+-   For **developed countries** (baseline): effect of schooling = -0.401 (p = 0.328, not significant)
+-   For **developing countries**: effect of schooling = -0.401 + 0.421 = 0.020 (not significant)
 
 **Overall Model Fit**
 
-- Multiple R-squared: **0.8891**
-- Adjusted R-squared: **0.8837**
-- Residual standard error: 2.728 on 123 degrees of freedom
+-   Multiple R-squared: **0.8891**
+-   Adjusted R-squared: **0.8837**
+-   Residual standard error: 2.728 on 123 degrees of freedom
 
 ## Model Selection
 
@@ -310,27 +310,26 @@ All VIF values are below 10, suggesting that multicollinearity is not a serious 
 
 This study asked two questions:
 
-1. **How is schooling associated with life expectancy?**
-2. **Does this association differ between developed and developing countries?**
+1.  **How is schooling associated with life expectancy?**
+2.  **Does this association differ between developed and developing countries?**
 
 Based on our analysis, we find:
 
-1. **Schooling does not have a statistically significant independent effect on life expectancy** after controlling for adult mortality, Hepatitis B vaccination, and income composition (p = 0.727). The positive bivariate relationship observed in the scatter plot is largely explained by these confounding factors.
+1.  **Schooling does not have a statistically significant independent effect on life expectancy** after controlling for adult mortality, Hepatitis B vaccination, and income composition (p = 0.727). The positive bivariate relationship observed in the scatter plot is largely explained by these confounding factors.
 
-2. **The association between schooling and life expectancy does not differ between developed and developing countries**. The interaction term (Schooling × Status) was not statistically significant (p = 0.343), indicating that the relationship between education and life expectancy is consistent across development contexts.
+2.  **The association between schooling and life expectancy does not differ between developed and developing countries**. The interaction term (Schooling × Status) was not statistically significant (p = 0.343), indicating that the relationship between education and life expectancy is consistent across development contexts.
 
-3. **The strongest predictors of life expectancy in the final model are:**
-   - **Income composition of resources** (positive, p < 0.001)
-   - **Adult Mortality** (negative, p < 0.001)
-   - **Hepatitis B vaccination** (positive, p < 0.001)
+3.  **The strongest predictors of life expectancy in the final model are:**
+
+    -   **Income composition of resources** (positive, p \< 0.001)
+    -   **Adult Mortality** (negative, p \< 0.001)
+    -   **Hepatitis B vaccination** (positive, p \< 0.001)
 
 These results suggest that education's apparent relationship with life expectancy is **indirect**, operating through improvements in health outcomes and economic conditions. When these mediating factors are accounted for, education itself does not have a direct effect on longevity.
 
 ### Policy Implications
 
-The findings suggest that policies aimed at improving life expectancy should prioritize:
-- **Direct health interventions**: Reducing adult mortality and increasing vaccination coverage
-- **Economic development**: Improving income distribution and economic conditions
+The findings suggest that policies aimed at improving life expectancy should prioritize: - **Direct health interventions**: Reducing adult mortality and increasing vaccination coverage - **Economic development**: Improving income distribution and economic conditions
 
 While education remains important for individual and societal development, its effect on population health appears to operate through these more direct channels.
 
@@ -338,23 +337,23 @@ While education remains important for individual and societal development, its e
 
 Several limitations should be noted:
 
-1. **Cross-sectional design**: The analysis uses only 2015 data, which provides a snapshot rather than capturing changes over time. This prevents causal inference about the direction of relationships.
+1.  **Cross-sectional design**: The analysis uses only 2015 data, which provides a snapshot rather than capturing changes over time. This prevents causal inference about the direction of relationships.
 
-2. **Country-level aggregation**: Relationships observed at the country level may not reflect individual-level relationships (ecological fallacy). Individual-level data would be needed to confirm these findings.
+2.  **Country-level aggregation**: Relationships observed at the country level may not reflect individual-level relationships (ecological fallacy). Individual-level data would be needed to confirm these findings.
 
-3. **Measurement limitations**: Years of schooling is an imperfect measure of educational quality. Additionally, the binary classification of developed/developing may mask substantial heterogeneity within each group.
+3.  **Measurement limitations**: Years of schooling is an imperfect measure of educational quality. Additionally, the binary classification of developed/developing may mask substantial heterogeneity within each group.
 
-4. **Potential omitted variables**: Other factors such as healthcare expenditure, environmental quality, political stability, and cultural factors were not included in the analysis.
+4.  **Potential omitted variables**: Other factors such as healthcare expenditure, environmental quality, political stability, and cultural factors were not included in the analysis.
 
 # Conclusion
 
 This study examined the relationship between education and life expectancy using 2015 data from 130 countries. After controlling for key health and socioeconomic factors (adult mortality, Hepatitis B vaccination, and income composition), we found:
 
-1. **Education does not have a significant independent effect on life expectancy**. The apparent bivariate relationship is explained by confounding factors such as adult mortality, vaccination coverage, and income distribution.
+1.  **Education does not have a significant independent effect on life expectancy**. The apparent bivariate relationship is explained by confounding factors such as adult mortality, vaccination coverage, and income distribution.
 
-2. **The association between education and life expectancy does not differ between developed and developing countries**. The interaction term was not statistically significant (p = 0.343), indicating that the relationship is consistent across development contexts.
+2.  **The association between education and life expectancy does not differ between developed and developing countries**. The interaction term was not statistically significant (p = 0.343), indicating that the relationship is consistent across development contexts.
 
-3. **The strongest predictors of life expectancy** are income composition (positive), adult mortality (negative), and Hepatitis B vaccination coverage (positive), collectively explaining 88.8% of the variation in life expectancy.
+3.  **The strongest predictors of life expectancy** are income composition (positive), adult mortality (negative), and Hepatitis B vaccination coverage (positive), collectively explaining 88.8% of the variation in life expectancy.
 
 These findings suggest that policies aimed at improving life expectancy should prioritize direct health interventions and economic development. Education remains valuable, but its impact on population health appears to be indirect, mediated through improvements in health outcomes and economic conditions.
 
@@ -362,9 +361,9 @@ These findings suggest that policies aimed at improving life expectancy should p
 
 We used generative AI (ChatGPT) for the following purposes:
 
-1. **Code debugging**: Assistance with troubleshooting R code errors and optimizing visualizations.
-2. **Writing assistance**: Help with structuring the report, improving clarity, and correcting grammatical errors.
-3. **Interpretation guidance**: Discussion of statistical concepts and interpretation of regression results.
+1.  **Code debugging**: Assistance with troubleshooting R code errors and optimizing visualizations.
+2.  **Writing assistance**: Help with structuring the report, improving clarity, and correcting grammatical errors.
+3.  **Interpretation guidance**: Discussion of statistical concepts and interpretation of regression results.
 
 All prompts used during the writing process are provided in the Appendix.
 
@@ -380,8 +379,8 @@ World Health Organization. (2020). *Global Health Observatory data repository*.
 
 ## AI Prompts Used
 
-1. "How do I interpret the VIF output in R for a model with an interaction term?"
-2. "What is the difference between additive and interaction models in linear regression?"
-3. "How should I explain the Mallows' Cp criterion in my report?"
-4. "Help me structure the discussion section for a regression analysis on life expectancy."
-5. "Can you help me create a clean table of regression coefficients in R Markdown?"
+1.  "How do I interpret the VIF output in R for a model with an interaction term?"
+2.  "What is the difference between additive and interaction models in linear regression?"
+3.  "How should I explain the Mallows' Cp criterion in my report?"
+4.  "Help me structure the discussion section for a regression analysis on life expectancy."
+5.  "Can you help me create a clean table of regression coefficients in R Markdown?"
