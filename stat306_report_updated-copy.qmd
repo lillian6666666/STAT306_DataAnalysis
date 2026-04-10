@@ -118,11 +118,11 @@ We focus on **Schooling** and **Status** because education may influence health 
 
 Each observation in the dataset represents a country in a given year. To maintain a cross-sectional framework and avoid dependence due to repeated measurements over time, we restrict the analysis to observations from **2015**.
 
-We remove variables not used in the current analysis (`Year`, `Country`, `Alcohol`, and `Total expenditure`) and apply listwise deletion to retain complete cases. The final dataset consists of **130 countries**.
+We remove variables not used in the current analysis (`Year`, `Country`, `Alcohol`, and `Total expenditure`) and apply listwise deletion to retain complete cases. The final dataset consists of **130 countries**, corresponding to approximately 71.04% of the pre-processed dataset, with about 28.96% of observations removed due to missing values.
 
 We removed `Country` from the analysis because it contains a large number of unique categories, which would introduce a high number of parameters if included directly in a regression model. Instead, we use the variable `Status`, as a meaningful grouping of countries, which allows us to capture broad structural differences while maintaining interpretability.
 
-The variables `Alcohol` and `Total expenditure` were removed due to a substantial number of missing values. We assume that these missing values occur without a systematic pattern and therefore do not introduce significant bias after listwise deletion. However, the missingness is not random, this could be a limitation of the analysis.
+The variables `Alcohol` and `Total expenditure` were removed due to a substantial number of missing values. We assume that these missing values occur without a systematic pattern and therefore do not introduce significant bias after listwise deletion. However, if the missingness is not random, this could be a limitation of the analysis.
 
 ## Variables Used in the Analysis
 
