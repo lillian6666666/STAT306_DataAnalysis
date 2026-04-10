@@ -136,6 +136,9 @@ While the dataset contains many variables, we focus on a subset that is most rel
 | **Adult Mortality** | Quantitative | Probability of dying between ages 15 and 60 per 1000 population |
 | **Hepatitis B** | Quantitative | Percentage of one-year-olds immunized against Hepatitis B |
 | **Income composition of resources** | Quantitative | Index measuring the distribution of income and resources |
+| **HIV/AIDS** | numerical | Deaths per 1 000 live births HIV/AIDS (0-4 years) |
+| **infant deaths** | numerical | Number of Infant Deaths per 1000 population |
+| **thinness 1-19 years** | numerical | Prevalence of thinness among children and adolescents for Age 10 to 19 (%) |
 
 For the categorical variable Status, "Developed" is used as the reference group in all regression models.
 
@@ -291,11 +294,7 @@ To identify a reasonable set of control variables, we applied forward selection,
 kable(cp_table, caption = "Exhaustive subset selection results")
 ```
 
-In addition to examining Mallows' (C_p) and adjusted (R\^2), we also inspected which variables were selected for each model size. The table above shows the variables included in each exhaustive subset model.
-
-The initial set of candidate predictors considered in the model selection procedures included Adult Mortality, infant deaths, percentage expenditure, Hepatitis B, under-five deaths, Diphtheria, thinness (1–19 years), and Income composition of resources. Schooling and Status were retained in all models as primary variables of interest.
-
-The table above shows the variables included in each exhaustive subset model.
+In addition to examining Mallows' (C_p) and adjusted (R\^2), we also inspected which variables were selected for each model size. The initial set of predictors considered in the model selection procedures included Adult Mortality, Schooling, infant deaths, Hepatitis B, HIV/AIDS, Status, thinness (1–19 years), and Income composition of resources. The table above shows the variables included in each exhaustive subset model.
 
 In particular, the best model, being the three-predictor model includes:
 
@@ -328,11 +327,13 @@ $$
 H_0:\beta_5 = 0 \qquad \text{vs} \qquad H_A:\beta_5 \ne 0
 $$
 
+Note that multiple hypothesis tests are conducted for different coefficients in the model, and the reported p-values correspond to individual parameter tests.
+
 ```{r}
 kable(coef_m3, caption = "Model 3 coefficient estimates")
 ```
 
-IThe results from Model 3 indicate that the selected control variables are all statistically significant and have meaningful associations with life expectancy.
+The results from Model 3 indicate that the selected control variables are all statistically significant and have meaningful associations with life expectancy.
 
 -   **Income composition of resources** has a strong positive coefficient (**36.81**, p \< 0.001). This suggests that, holding all other variables constant, an increase in this index is associated with a substantial increase in life expectancy. Since this variable captures broader socioeconomic conditions, this result highlights the importance of economic development and resource distribution in determining population health.
 
@@ -417,7 +418,7 @@ Instead, income composition of resources and Hepatitis B immunization showed str
 
 In conclusion, schooling and development status initially appeared to be associated with life expectancy, but the final regression model showed that their effects were not statistically significant after accounting for other factors. This result indicates that life expectancy is more strongly related to variables such as income composition of resources, adult mortality, and Hepatitis B immunization.
 
-Two limitations should be noted. First, the study is based on observational country-level data from a single year, so the results should be interpreted as associations rather than causal effects. Second, other relevant determinants of life expectancy may be omitted from the final model.
+Several limitations should be noted. First, the study is based on observational country-level data from a single year, so the results should be interpreted as associations rather than causal effects. Second, missing data led to the removal of approximately 29% of observations through listwise deletion, which may introduce bias if the missingness is not completely random. Third, mild heteroscedasticity and slight deviations from normality were observed in the diagnostic plots, which may affect inference. Finally, moderate multicollinearity among predictors (as indicated by VIF values) may have influenced the stability of coefficient estimates.
 
 ## Submission Details
 
