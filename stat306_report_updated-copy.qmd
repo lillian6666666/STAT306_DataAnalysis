@@ -1,14 +1,17 @@
 ---
-title: "The Association Between Schooling and Life Expectancy: A Comparative Analysis of Developed and Developing Countries"
+title: "Project Draft 1"
 author:
-  - name: "Group Members"
+  - name: "Ruiting Jiang, Mark Cao, Lillian Chen, Jiayi Lyu"
     affiliation: "STAT 306, University of British Columbia"
-date: "March 24, 2025"
+date: "March 23, 2025"
 format:
-  html:
-    toc: true
-    toc-depth: 2
+  pdf:
+    documentclass: article
+    pdf-engine: pdflatex
+    fontsize: 10pt
+    geometry: margin=1in
     number-sections: true
+    toc: false
 execute:
   echo: false
   warning: false
@@ -20,8 +23,11 @@ library(tidyverse)
 library(leaps)
 library(car)
 library(knitr)
+library(broom)
 
-# Read and prepare data
+options(knitr.kable.NA = "")
+
+# Read and clean data
 data <- read_csv("https://drive.google.com/uc?export=download&id=1A_Nkqsxh4ymFIJDj7Fbo1SOCoVujhbjb")
 
 data <- data %>%
@@ -32,363 +38,401 @@ data_sel <- data %>%
   select(-Year, -Country, -Alcohol, -`Total expenditure`) %>%
   na.omit()
 
-# Convert Status to factor
 data_sel$Status <- as.factor(data_sel$Status)
 
-# Fit models
-model1 <- lm(LifeExpectancy ~ `Income composition of resources` +
-              `Adult Mortality` + `Hepatitis B` + Schooling + Status,
-            data = data_sel)
+# Preliminary models
+model1 <- lm(LifeExpectancy ~ Schooling + Status, data = data_sel)
+model2 <- lm(LifeExpectancy ~ Schooling * Status, data = data_sel)
 
-model2 <- lm(LifeExpectancy ~ `Income composition of resources` +
-              `Adult Mortality` + `Hepatitis B` + Schooling * Status,
-            data = data_sel)
-
-# Subset selection
-forward_model <- regsubsets(LifeExpectancy ~ ., data = data_sel, method = "forward")
-ss <- summary(forward_model)
-
+# Variable selection
+forward_model  <- regsubsets(LifeExpectancy ~ ., data = data_sel, method = "forward")
 backward_model <- regsubsets(LifeExpectancy ~ ., data = data_sel, method = "backward")
-ss2 <- summary(backward_model)
+best_model     <- regsubsets(LifeExpectancy ~ ., data = data_sel, method = "exhaustive")
 
-exhaustive_model <- regsubsets(LifeExpectancy ~ ., data = data_sel, method = "exhaustive")
-ss3 <- summary(exhaustive_model)
+ss_e <- summary(best_model)
+
+# Final models with selected controls
+model3 <- lm(LifeExpectancy ~ `Income composition of resources` +
+               `Adult Mortality` + `Hepatitis B` + Schooling + Status,
+             data = data_sel)
+
+model4 <- lm(LifeExpectancy ~ `Income composition of resources` +
+               `Adult Mortality` + `Hepatitis B` + Schooling * Status,
+             data = data_sel)
+
+# Tables
+sample_summary <- tibble(
+  Statistic = c("Sample size", "Mean life expectancy", "Median life expectancy",
+                "SD of life expectancy", "Mean schooling", "SD of schooling"),
+  Value = c(
+    nrow(data_sel),
+    round(mean(data_sel$LifeExpectancy), 2),
+    round(median(data_sel$LifeExpectancy), 2),
+    round(sd(data_sel$LifeExpectancy), 2),
+    round(mean(data_sel$Schooling), 2),
+    round(sd(data_sel$Schooling), 2)
+  )
+)
+
+cp_table <- tibble(
+  `Number of predictors` = 1:length(ss_e$cp),
+  `Adjusted R^2` = round(ss_e$adjr2, 4),
+  `Cp` = round(ss_e$cp, 4),
+  `Target p = k + 1` = 2:(length(ss_e$cp) + 1)
+)
+
+coef_m1 <- tidy(model1) %>% mutate(across(where(is.numeric), ~ round(.x, 4)))
+coef_m2 <- tidy(model2) %>% mutate(across(where(is.numeric), ~ round(.x, 4)))
+coef_m3 <- tidy(model3) %>% mutate(across(where(is.numeric), ~ round(.x, 4)))
+coef_m4 <- tidy(model4) %>% mutate(across(where(is.numeric), ~ round(.x, 4)))
+
+vif_m3 <- tibble(
+  Variable = names(vif(model3)),
+  VIF = round(as.numeric(vif(model3)), 3)
+)
 ```
 
 # Introduction
 
-Life expectancy is a fundamental indicator of a country's overall health and socioeconomic development. In 2024, Canada's average life expectancy reached 82.2 years, reflecting the nation's strong healthcare system and high quality of life. However, life expectancy varies considerably across countries, ranging from under 50 years in some nations to over 80 years in others. Understanding the factors that contribute to these differences is important for informing public health policy and development strategies.
+Life expectancy is an important indicator of a country’s overall health and socioeconomic development. For example, Canada had an average life expectancy of 82.2 years in 2024 (Statistics Canada, 2026), reflecting a high standard of living and a well-developed healthcare system. In general, life expectancy represents the average number of years a person is expected to live under current mortality conditions, and it may be influenced by a range of factors such as income, access to healthcare, and overall living conditions.
 
-This study investigates the relationship between education, as measured by average years of schooling, and life expectancy across countries. Education may influence health outcomes through multiple pathways, including improved health literacy, better employment opportunities, higher income, and greater access to healthcare resources. Additionally, we examine whether the association between education and life expectancy differs between developed and developing countries.
+In this study, we use the *Life Expectancy (WHO)* dataset from Kaggle, which compiles country-level health and socioeconomic indicators from the World Health Organization (WHO) and related United Nations sources. The full dataset contains annual observations from 2000 to 2015 for 193 countries and includes variables on mortality, immunization, income, education, and other demographic and health characteristics.
 
-## Data Source and Description
+The data are collected from national health and economic reports and are compiled, cleaned, and standardized by organizations such as the WHO to allow meaningful comparisons across countries and over time. Each observation represents a country in a specific year and includes variables such as life expectancy, schooling, mortality rates, BMI, and development status.
 
-The data for this study are sourced from the World Health Organization (WHO) Global Health Observatory and United Nations economic databases, compiled into the *Life Expectancy (WHO)* dataset available on Kaggle. The dataset contains annual observations from 2000 to 2015 for 193 countries, with variables related to health outcomes, demographic characteristics, socioeconomic indicators, and immunization coverage.
+For this analysis, we focus on a **cross-sectional dataset using observations from the year 2015**, the most recent year available. Restricting the data to a single year allows us to avoid complications arising from repeated observations of the same country over time and makes the standard regression assumptions more reasonable.
 
-For this analysis, we focus on data from **2015**, the most recent year available in the dataset. After removing observations with missing values, the final dataset consists of **130 countries** with complete information on all variables used in the model.
+The primary response variable in this analysis is life expectancy in years for 2015, which serves as the dependent variable. Life expectancy varies over time and may be influenced by external factors not captured in the dataset, such as global health events. For example, events such as the SARS outbreak in 2003 and the H1N1 (Swine Flu) pandemic in 2009 could temporarily affect life expectancy and introduce variability unrelated to the variables of interest.
 
-### Variables of Interest
+To reduce this source of variation and maintain a consistent cross-sectional framework, we restrict our analysis to the year 2015, which we treat as a relatively stable reference point.
 
-| Variable                                      | Type         | Description                                                                              |
+The two primary explanatory variables are **Schooling** (average years of schooling) and **Status** (country classification as developed or developing).
+
+Our primary research question is:
+
+> **How is schooling associated with life expectancy, and does this association differ between developed and developing countries?**
+
+We focus on **Schooling** and **Status** because education may influence health knowledge, quality of life, and access to opportunities, while development status reflects broader differences in healthcare systems, infrastructure, and living conditions. By examining these relationships using statistical summaries, visualizations, and linear regression models, we aim to better understand which factors are most strongly associated with life expectancy across countries and how these relationships vary across different development contexts.
+
+# Data Source and Description
+
+Each observation in the dataset represents a country in a given year. To maintain a cross-sectional framework and avoid dependence due to repeated measurements over time, we restrict the analysis to observations from **2015**.
+
+We remove variables not used in the current analysis (`Year`, `Country`, `Alcohol`, and `Total expenditure`) and apply listwise deletion to retain complete cases. The final dataset consists of **130 countries**.
+
+We removed `Country` from the analysis because it contains a large number of unique categories, which would introduce a high number of parameters if included directly in a regression model. Instead, we use the variable `Status`, as a meaningful grouping of countries, which allows us to capture broad structural differences while maintaining interpretability.
+
+The variables `Alcohol` and `Total expenditure` were removed due to a substantial number of missing values. We assume that these missing values occur without a systematic pattern and therefore do not introduce significant bias after listwise deletion. However, the missingness is not random, this could be a limitation of the analysis.
+
+## Variables Used in the Analysis
+
+While the dataset contains many variables, we focus on a subset that is most relevant to our research question.
+
+| Variable | Type | Description |
 |------------------------|------------------------|------------------------|
-| **LifeExpectancy** (Response)                 | Quantitative | Average number of years a newborn is expected to live under current mortality conditions |
-| **Schooling** (Primary predictor)             | Quantitative | Average number of years of schooling among adults                                        |
-| **Status** (Primary predictor)                | Categorical  | Country development classification: Developed or Developing                              |
-| **Adult Mortality** (Control)                 | Quantitative | Probability of dying between ages 15 and 60 per 1000 population                          |
-| **Hepatitis B** (Control)                     | Quantitative | Percentage of one-year-olds immunized against Hepatitis B                                |
-| **Income composition of resources** (Control) | Quantitative | Index measuring the distribution of income and resources                                 |
+| **LifeExpectancy** | Quantitative | Average number of years a newborn is expected to live under current mortality conditions |
+| **Schooling** | Quantitative | Average number of years of schooling among adults |
+| **Status** | Categorical | Country development classification: Developed or Developing |
+| **Adult Mortality** | Quantitative | Probability of dying between ages 15 and 60 per 1000 population |
+| **Hepatitis B** | Quantitative | Percentage of one-year-olds immunized against Hepatitis B |
+| **Income composition of resources** | Quantitative | Index measuring the distribution of income and resources |
 
-Adult Mortality was included because it reflects deaths in the working-age population, which serves as an indicator for national life expectancy.
-
-Hepatitis B was included to indicate the strength of the healthcare system, which reduces the infectious disease rate and improves survival.
-
-Income Composition of Resources was included because it reflects national socioeconomic conditions that influence access to healthcare, living quality, and nutrients, which are critical for impacting life expectancy.
-
-### Data Cleaning
+## Data Cleaning
 
 The following data cleaning steps were performed:
 
 1.  Filtered observations to retain only **2015** data.
-2.  Removed variables not used in the current analysis (`Year`, `Country`, `Alcohol`, and `Total expenditure`).
+2.  Removed `Country`, `Alcohol`, and `Total expenditure`.
 3.  Excluded observations with missing values using listwise deletion.
 4.  Converted `Status` to a factor for categorical analysis.
 
-# Exploratory Data Analysis
+## Statistical Summary
 
-In this section, we will perform exploratory data analysis (EDA) to explore the variable and their relationships with life expectancy. This step helps us to recognize and identify patterns, distributions, and potential issues, and provides initial quantitative evidence about which predictors might be related to life expectancy.
-
-## Summary Statistics
-
-```{r summary-stats}
-summary_stats <- data_sel %>%
-  summarise(
-    `Life Expectancy (years)` = paste0(round(mean(LifeExpectancy), 2), " (", round(sd(LifeExpectancy), 2), ")"),
-    `Schooling (years)` = paste0(round(mean(Schooling), 2), " (", round(sd(Schooling), 2), ")"),
-    `Adult Mortality` = paste0(round(mean(`Adult Mortality`), 2), " (", round(sd(`Adult Mortality`), 2), ")"),
-    `Hepatitis B (%)` = paste0(round(mean(`Hepatitis B`), 2), " (", round(sd(`Hepatitis B`), 2), ")"),
-    `Income Composition` = paste0(round(mean(`Income composition of resources`), 2), " (", round(sd(`Income composition of resources`), 2), ")")
-  ) %>%
-  pivot_longer(everything(), names_to = "Variable", values_to = "Mean (SD)")
-
-kable(summary_stats, caption = "Summary Statistics for Key Variables (N = 130)")
+```{r}
+kable(sample_summary, caption = "Summary statistics for the analysis sample")
 ```
 
-The average life expectancy across countries is about **71.6 years** (SD = 8.1), and the average years of schooling is about **12.5 years** (SD = 3.1), indicating substantial variation across countries.
+The average life expectancy in the analysis sample is **71.62 years**, with a median of **73.90** and a standard deviation of **8.12**. Average schooling is **12.54 years**, indicating noticeable cross-country variation in educational attainment.
 
-## Life Expectancy by Development Status
+# Analysis
 
-```{r boxplot-status}
+## Exploratory Data Analysis
+
+We begin by examining how life expectancy varies by development status and schooling.
+
+```{r fig.height=3.5, fig.width=5.2}
 ggplot(data_sel, aes(x = Status, y = LifeExpectancy, fill = Status)) +
-  geom_boxplot(alpha = 0.7) +
+  geom_boxplot() +
   labs(
-    title = "Life Expectancy by Development Status (2015)",
+    title = "Life Expectancy by Development Status",
     x = "Development Status",
     y = "Life Expectancy (years)"
   ) +
   theme_minimal() +
-  scale_fill_manual(values = c("steelblue", "orange"))
+  theme(legend.position = "none")
 ```
 
-Developed countries generally have higher life expectancy than developing countries, although there is overlap between the two groups.
+The boxplot suggests that developed countries tend to have higher life expectancy than developing countries, although there is overlap between the two groups.
 
-## Schooling and Life Expectancy
-
-```{r scatter-plot}
+```{r fig.height=3.5, fig.width=5.4}
 ggplot(data_sel, aes(x = Schooling, y = LifeExpectancy, color = Status)) +
-  geom_point(alpha = 0.6, size = 2) +
+  geom_point(alpha = 0.8) +
   geom_smooth(method = "lm", se = FALSE) +
   labs(
-    title = "Life Expectancy vs. Schooling by Development Status (2015)",
-    x = "Average Years of Schooling",
-    y = "Life Expectancy (years)",
-    color = "Development Status"
+    title = "Life Expectancy vs Schooling by Development Status",
+    x = "Schooling (years)",
+    y = "Life Expectancy (years)"
   ) +
-  theme_minimal() +
-  scale_color_manual(values = c("steelblue", "orange"))
+  theme_minimal()
 ```
 
-The scatter plot suggests a positive relationship between schooling and life expectancy. The fitted lines appear to have similar slopes for developed and developing countries, which motivates checking whether an interaction term is needed.
+The scatter plot suggests a positive relationship between schooling and life expectancy. It also suggests that the slope for developing countries may be steeper than the slope for developed countries, which motivates considering an interaction model in addition to an additive model.
 
-# Statistical Analysis
+## Distribution check
+
+```{r fig.height=3.5, fig.width=5.4}
+# Distribution of key variables
+ggplot(data_sel, aes(x = LifeExpectancy)) +
+  geom_histogram(bins = 30) +
+  labs(title = "Distribution of Life Expectancy")
+
+ggplot(data_sel, aes(x = Schooling)) +
+  geom_histogram(bins = 30) +
+  labs(title = "Distribution of Schooling")
+
+ggplot(data_sel, aes(x = `Adult Mortality`)) +
+  geom_histogram(bins = 30) +
+  labs(title = "Distribution of Adult Mortality")
+
+ggplot(data_sel, aes(x = `Income composition of resources`)) +
+  geom_histogram(bins = 30) +
+  labs(title = "Distribution of Income Composition")
+```
+
+We examine the distributions of key variables to assess whether transformations may be necessary. Most variables appear reasonably symmetric, although Adult Mortality shows some right-skewness. This suggests that a transformation such as a logarithmic transformation may be considered.
+
+## Log transformation check
+
+```{r fig.height=3.5, fig.width=5.4}
+model_log <- lm(LifeExpectancy ~ log(`Adult Mortality`) +
+                  `Income composition of resources` +
+                  `Hepatitis B` + Schooling + Status,
+                data = data_sel)
+
+summary(model_log)
+
+# Compare models
+AIC(model3, model_log)
+```
+
+We also explored potential transformations for skewed variables. In particular, we applied a log transformation to Adult Mortality to account for its right-skewed distribution.
+
+The transformed model did not lead to a substantial improvement in model fit or interpretability, as measured by AIC and overall conclusions. Therefore, for simplicity and ease of interpretation, we proceed with the original (untransformed) variables in the final model.
+
+This suggests that the linear model assumptions are reasonably satisfied without requiring major transformations.
+
+## Preliminary Regression Analysis
+
+We now move from exploratory data analysis to statistical modelling. The previous section focuses on visualizing patterns and relationships in the data; this section uses linear regression and models to evaluate the relationship between schooling and life expectancy. In this section, we will fit preliminary regression models to understand the relationship between schooling and life expectancy and to explore whether this relationship is impacted by development status. We first consider an additive model, followed by an interaction model.
+
+We first fit two simple models using only the variables directly named in the research question.
+
+### Model 1: Additive Model
+
+$$
+\text{LifeExpectancy} = \beta_0 + \beta_1(\text{Schooling}) + \beta_2(\text{Status}) + \epsilon
+$$ For the schooling effect in Model 1, we test:
+
+$$
+H_0:\beta_1 = 0 \qquad \text{vs} \qquad H_A:\beta_1 \ne 0
+$$
+
+For the status effect in Model 1, we test:
+
+$$
+H_0:\beta_2 = 0 \qquad \text{vs} \qquad H_A:\beta_2 \ne 0
+$$
+
+```{r}
+kable(coef_m1, caption = "Model 1 coefficient estimates")
+```
+
+Model 1 shows a strong positive association between schooling and life expectancy. The coefficient for **Schooling** is **2.2260** with a p-value less than 0.001, suggesting that, holding status constant, an additional year of schooling is associated with an increase of about **2.23 years** in life expectancy. The coefficient for **StatusDeveloping** is negative but not statistically significant at the 0.05 level.
+
+Model 1 has an (R\^2) of **0.6533** and an adjusted (R\^2) of **0.6478**.
+
+### Model 2: Interaction Model
+
+$$
+\text{LifeExpectancy} = \beta_0 + \beta_1(\text{Schooling}) + \beta_2(\text{Status}) + \beta_3(\text{Schooling} \times \text{Status}) + \epsilon
+$$ For the interaction term in Model 2, we test:
+
+$$
+H_0:\beta_3 = 0 \qquad \text{vs} \qquad H_A:\beta_3 \ne 0
+$$
+
+```{r}
+kable(coef_m2, caption = "Model 2 coefficient estimates")
+```
+
+In Model 2, the interaction term **Schooling × StatusDeveloping** is statistically significant (p = **0.0082**), suggesting that in this simple model the effect of schooling appears to differ by development status. For developed countries, the schooling slope is **0.4622**, while for developing countries the slope is **0.4622 + 1.8892 = 2.3514**. Model 2 has a slightly larger adjusted (R\^2) (**0.6643**) than Model 1.
+
+These preliminary results suggest a possible interaction, but they do not account for additional confounding variables. We therefore next perform variable selection and refit the models with selected controls.
 
 ## Variable Selection
 
-Before fitting the main regression models, subset selection was used to identify a reasonable set of control variables. We focused on Mallows' $C_p$, which prefers models whose $C_p$ values are close to the number of parameters $p = k + 1$ (where $k$ is the number of predictors).
+To identify a reasonable set of control variables, we applied forward selection, backward selection, and exhaustive best subset selection using `regsubsets()`. We focus on Mallows’ (C_p) together with adjusted (R\^2). In the exhaustive search results below, the three-predictor model has (C_p = 4.6298), which is closest to the target value (p = k+1 = 4), while adjusted (R\^2) changes only modestly as additional predictors are added.
 
-```{r subset-selection}
-cp_table <- data.frame(
-  `Number of Variables (k)` = 1:length(ss3$cp),
-  `Cp` = round(ss3$cp, 2),
-  `p = k + 1` = 2:(length(ss3$cp) + 1)
-)
-
-kable(cp_table, caption = "Mallows' Cp Values for Exhaustive Subset Selection")
+```{r}
+kable(cp_table, caption = "Exhaustive subset selection results")
 ```
 
-The **3-variable model** has a $C_p$ value of **4.63**, which is closest to $p = 4$, indicating it is the optimal model according to Mallows' $C_p$ criterion. The selected control variables are:
+In addition to examining Mallows' (C_p) and adjusted (R\^2), we also inspected which variables were selected for each model size. The table above shows the variables included in each exhaustive subset model.
 
--   **Adult Mortality**: a key indicator of population health\
--   **Hepatitis B**: represents immunization coverage and healthcare access\
--   **Income composition of resources**: captures socioeconomic conditions
+In particular, the three-predictor model includes:
 
-These three variables were retained as controls in all subsequent regression models.
+-   **Adult Mortality**
+-   **Hepatitis B**
+-   **Income composition of resources**
 
-## Model 1: Additive Linear Regression
+This model has a (C_p) value close to the target value (p = k+1), indicating a good balance between model fit and model complexity. These three variables were also selected consistently across the forward, backward, and exhaustive procedures.
 
-We first fit an additive linear regression model that includes the three control variables along with our predictors of interest:
+We therefore retain these variables as control variables in the final stage of the analysis in order to better isolate the relationship between our primary variables of interest, **Schooling** and **Status**, and life expectancy.
+
+## Final Regression Analysis
+
+### Model 3: Additive Model With Controls
 
 $$
 \begin{aligned}
-\text{LifeExpectancy} ={}& \beta_0 + \beta_1(\text{Adult Mortality}) + \beta_2(\text{Hepatitis B}) \\
-&+ \beta_3(\text{Income composition}) + \beta_4(\text{Schooling}) + \beta_5(\text{Status}) + \epsilon
+\text{LifeExpectancy} = &\beta_0 + \beta_1(\text{Income composition}) + \beta_2(\text{Adult Mortality}) \\
+&+ \beta_3(\text{Hepatitis B}) + \beta_4(\text{Schooling}) + \beta_5(\text{Status}) + \epsilon
 \end{aligned}
 $$
 
-```{r model1-results}
-summary(model1)
+For the schooling and status effects in Model 3, we test:
+
+$$
+H_0:\beta_4 = 0 \qquad \text{vs} \qquad H_A:\beta_4 \ne 0
+$$
+
+$$
+H_0:\beta_5 = 0 \qquad \text{vs} \qquad H_A:\beta_5 \ne 0
+$$
+
+```{r}
+kable(coef_m3, caption = "Model 3 coefficient estimates")
 ```
 
-```{r model1-diagnostics, fig.height=4, fig.width=8}
-par(mfrow = c(1, 2))
-plot(model1$fitted.values, model1$residuals,
-     main = "Model 1: Residuals vs Fitted",
-     xlab = "Fitted Values", ylab = "Residuals",
-     pch = 19, cex = 0.5)
-abline(h = 0, col = "red", lty = 2)
+IThe results from Model 3 indicate that the selected control variables are all statistically significant and have meaningful associations with life expectancy.
 
-qqnorm(resid(model1), main = "Model 1: Normal Q-Q Plot",
-       pch = 19, cex = 0.5)
-qqline(resid(model1), col = "red", lty = 2)
-par(mfrow = c(1, 1))
-```
+-   **Income composition of resources** has a strong positive coefficient (**36.81**, p \< 0.001). This suggests that, holding all other variables constant, an increase in this index is associated with a substantial increase in life expectancy. Since this variable captures broader socioeconomic conditions, this result highlights the importance of economic development and resource distribution in determining population health.
 
-### Model 1 Results
+-   **Adult Mortality** has a statistically significant negative coefficient (**-0.0252**, p \< 0.001). This indicates that higher adult mortality rates are associated with lower life expectancy, which is consistent with expectations, as this variable directly reflects population health risks.
 
-**Hypothesis Testing**
+-   **Hepatitis B immunization** has a positive and statistically significant coefficient (**0.0458**, p \< 0.001). This suggests that higher immunization coverage is associated with increased life expectancy, reflecting the role of preventive healthcare and public health interventions.
 
-For each coefficient, we test:
+However, after controlling for these variables:
 
--   $H_0: \beta_j = 0$ (no effect on life expectancy)
--   $H_1: \beta_j \neq 0$ (significant effect)
+-   **Schooling** is no longer statistically significant (p = **0.727**). We fail to reject the null hypothesis $H_0: \beta_{\text{Schooling}} = 0$, indicating that there is no evidence of an independent association between schooling and life expectancy once these control variables are included.
 
-| Variable           | Estimate | Std. Error | t-value | p-value  | Decision                 |
-|------------|------------|------------|------------|------------|------------|
-| (Intercept)        | 47.381   | 2.206      | 21.483  | \< 0.001 | Reject $H_0$             |
-| Income composition | 36.807   | 4.611      | 7.983   | \< 0.001 | Reject $H_0$             |
-| Adult Mortality    | -0.025   | 0.003      | -8.217  | \< 0.001 | Reject $H_0$             |
-| Hepatitis B        | 0.046    | 0.010      | 4.532   | \< 0.001 | Reject $H_0$             |
-| Schooling          | -0.081   | 0.233      | -0.349  | 0.727    | **Fail to reject** $H_0$ |
-| StatusDeveloping   | -0.144   | 0.810      | -0.177  | 0.860    | **Fail to reject** $H_0$ |
+-   **Status** is also not statistically significant (p = **0.860**). We fail to reject the null hypothesis $H_0: \beta_{\text{Status}} = 0$, suggesting that, conditional on the included controls, there is no statistically significant difference in life expectancy between developed and developing countries.
 
-**Overall Model Fit**
+This change compared to the preliminary models suggests that the apparent relationship between schooling (and development status) and life expectancy may be explained by confounding variables such as economic conditions, mortality rates, and immunization coverage. In other words, schooling may be indirectly related to life expectancy through these factors rather than having a direct effect.
 
--   Multiple R-squared: **0.8882**
--   Adjusted R-squared: **0.8837**
--   F-statistic: 197.1 on 5 and 124 DF, p-value: \< 2.2e-16
+The model has an (R\^2) of **0.8882** and an adjusted (R\^2) of **0.8837**, indicating that approximately **88.8%** of the variation in life expectancy is explained by the variables included in the model. This high explanatory power suggests that the selected variables capture key determinants of life expectancy at the country level.
 
-The significant F-test (p \< 0.001) indicates that the model as a whole explains a substantial portion of the variation in life expectancy. The non-significant coefficients for Schooling (p = 0.727) and Status (p = 0.860) suggest that, after controlling for adult mortality, Hepatitis B vaccination, and income composition, these variables do not have statistically significant independent effects on life expectancy.
+### Model 4: Interaction Model With Controls
 
-## Model 2: Interaction Model
-
-We then tested whether the effect of schooling on life expectancy differs between developed and developing countries by adding an interaction term:
+We specifically examined the interaction between educational achievement and development level, as our research question directly addresses whether the relationship between educational achievement and life expectancy differs between developed and developing countries. We did not include interaction terms involving control variables, as doing so would significantly increase the model’s complexity, reduce its interpretability, and stray from the core issues of primary concern. Our objective is to determine whether the impact of educational achievement varies across different levels of development.
 
 $$
 \begin{aligned}
-\text{LifeExpectancy} ={}& \beta_0 + \beta_1(\text{Adult Mortality}) + \beta_2(\text{Hepatitis B}) + \beta_3(\text{Income composition}) \\
+\text{LifeExpectancy} = &\beta_0 + \beta_1(\text{Income composition}) + \beta_2(\text{Adult Mortality}) + \beta_3(\text{Hepatitis B}) \\
 &+ \beta_4(\text{Schooling}) + \beta_5(\text{Status}) + \beta_6(\text{Schooling} \times \text{Status}) + \epsilon
 \end{aligned}
 $$
 
-```{r model2-results}
-summary(model2)
+For the interaction term in Model 4, we test:
+
+$$
+H_0:\beta_6 = 0 \qquad \text{vs} \qquad H_A:\beta_6 \ne 0
+$$
+
+```{r}
+kable(coef_m4, caption = "Model 4 coefficient estimates")
 ```
 
-```{r model2-diagnostics, fig.height=4, fig.width=8}
+In Model 4, the interaction term **Schooling × StatusDeveloping** is not statistically significant (p = **0.343**). The adjusted (R\^2) is **0.8837**, essentially identical to Model 3. Thus, after controlling for adult mortality, Hepatitis B immunization, and income composition, there is no evidence that the relationship between schooling and life expectancy differs between developed and developing countries.
+
+Because the interaction is not significant and the adjusted (R\^2) does not improve, we select **Model 3** as the final model by the principle of parsimony.
+
+```{r}
+AIC(model1, model2, model3, model4)
+```
+
+We further compare the models using the Akaike Information Criterion (AIC), which balances model fit and complexity.
+
+Model 3 has the lowest AIC (637.60) among all models, indicating the best trade-off between goodness of fit and model simplicity. Although Model 4 includes an interaction term, it has a slightly higher AIC (638.64), suggesting that the added complexity is not justified.
+
+Therefore, both the hypothesis test for the interaction term and the AIC comparison support selecting Model 3 as the final model.
+
+## Diagnostics and Multicollinearity
+
+```{r fig.height=3.5, fig.width=6.8}
 par(mfrow = c(1, 2))
-plot(model2$fitted.values, model2$residuals,
-     main = "Model 2: Residuals vs Fitted",
-     xlab = "Fitted Values", ylab = "Residuals",
-     pch = 19, cex = 0.5)
+plot(model3$fitted.values, model3$residuals,
+     main = "Model 3: Residuals vs Fitted",
+     xlab = "Fitted values", ylab = "Residuals")
 abline(h = 0, col = "red", lty = 2)
 
-qqnorm(resid(model2), main = "Model 2: Normal Q-Q Plot",
-       pch = 19, cex = 0.5)
-qqline(resid(model2), col = "red", lty = 2)
+qqnorm(resid(model3), main = "Model 3: Normal Q-Q Plot")
+qqline(resid(model3), col = "red", lty = 2)
 par(mfrow = c(1, 1))
 ```
 
-### Model 2 Results
+The residuals vs fitted plot shows no strong systematic pattern, suggesting that the linearity and constant variance assumptions are reasonably satisfied. The Q-Q plot indicates that the residuals are approximately normal, with only modest deviations in the tails.These issues are not severe but should be acknowledged as limitations when interpreting the model.
 
-**Hypothesis Testing for Interaction**
+We assessed multicollinearity using variance inflation factors (VIFs) for the final additive model.
 
-To answer whether the association between schooling and life expectancy differs by development status, we test:
-
--   $H_0: \beta_6 = 0$ (no difference between developed and developing countries)
--   $H_1: \beta_6 \neq 0$ (the effect differs)
-
-| Variable                       | Estimate | Std. Error | t-value | p-value   | Decision                 |
-|------------|------------|------------|------------|------------|------------|
-| (Intercept)                    | 54.006   | 7.296      | 7.402   | \< 0.001  | Reject $H_0$             |
-| Income composition             | 35.210   | 4.908      | 7.174   | \< 0.001  | Reject $H_0$             |
-| Adult Mortality                | -0.026   | 0.003      | -8.268  | \< 0.001  | Reject $H_0$             |
-| Hepatitis B                    | 0.046    | 0.010      | 4.535   | \< 0.001  | Reject $H_0$             |
-| Schooling                      | -0.401   | 0.409      | -0.982  | 0.328     | Fail to reject $H_0$     |
-| StatusDeveloping               | -6.928   | 7.167      | -0.967  | 0.336     | Fail to reject $H_0$     |
-| **Schooling:StatusDeveloping** | 0.421    | 0.442      | 0.953   | **0.343** | **Fail to reject** $H_0$ |
-
-**Interpretation of the Interaction**
-
-The interaction term has a p-value of **0.343**, which is greater than 0.05. Therefore, we fail to reject the null hypothesis. There is **no sufficient evidence** that the effect of schooling on life expectancy differs between developed and developing countries.
-
--   For **developed countries** (baseline): effect of schooling = -0.401 (p = 0.328, not significant)
--   For **developing countries**: effect of schooling = -0.401 + 0.421 = 0.020 (not significant)
-
-**Overall Model Fit**
-
--   Multiple R-squared: **0.8891**
--   Adjusted R-squared: **0.8837**
--   Residual standard error: 2.728 on 123 degrees of freedom
-
-## Model Selection
-
-We compare the additive model (Model 1) and the interaction model (Model 2) to determine which provides a more appropriate description of the data.
-
-The interaction term (Schooling × Status) is **not statistically significant** (p = 0.343). This indicates that adding the interaction term does not significantly improve the model's ability to explain variation in life expectancy. Additionally, the adjusted R² values are nearly identical for both models (0.8837 for both), suggesting that the interaction term does not provide additional explanatory power.
-
-Therefore, we select the **additive model (Model 1)** as our final model. This choice is supported by the principle of parsimony: when a simpler model explains the data nearly as well as a more complex model, the simpler model is preferred.
-
-## Multicollinearity Assessment
-
-Variance Inflation Factors (VIFs) were used to assess multicollinearity in the additive model.
-
-```{r vif}
-vif_table <- data.frame(
-  Variable = names(vif(model1)),
-  VIF = round(vif(model1), 2)
-)
-
-kable(vif_table, caption = "Variance Inflation Factor (VIF) for Additive Model")
+```{r}
+kable(vif_m3, caption = "VIF values for the final model")
 ```
 
-All VIF values are below 10, suggesting that multicollinearity is not a serious concern. The moderate correlation between Schooling (VIF = 7.19) and Income composition (VIF = 8.43) is expected, as education and income are naturally related, but does not invalidate the model.
-
-# Discussion
-
-## Addressing the Research Question
-
-This study asked two questions:
-
-1.  **How is schooling associated with life expectancy?**
-2.  **Does this association differ between developed and developing countries?**
-
-Based on our analysis, we find:
-
-1.  **Schooling does not have a statistically significant independent effect on life expectancy** after controlling for adult mortality, Hepatitis B vaccination, and income composition (p = 0.727). The positive bivariate relationship observed in the scatter plot is largely explained by these confounding factors.
-
-2.  **The association between schooling and life expectancy does not differ between developed and developing countries**. The interaction term (Schooling × Status) was not statistically significant (p = 0.343), indicating that the relationship between education and life expectancy is consistent across development contexts.
-
-3.  **The strongest predictors of life expectancy in the final model are:**
-
-    -   **Income composition of resources** (positive, p \< 0.001)
-    -   **Adult Mortality** (negative, p \< 0.001)
-    -   **Hepatitis B vaccination** (positive, p \< 0.001)
-
-These results suggest that education's apparent relationship with life expectancy is **indirect**, operating through improvements in health outcomes and economic conditions. When these mediating factors are accounted for, education itself does not have a direct effect on longevity.
-
-### Policy Implications
-
-The findings suggest that policies aimed at improving life expectancy should prioritize: - **Direct health interventions**: Reducing adult mortality and increasing vaccination coverage - **Economic development**: Improving income distribution and economic conditions
-
-While education remains important for individual and societal development, its effect on population health appears to operate through these more direct channels.
-
-## Limitations
-
-Several limitations should be noted:
-
-1.  **Cross-sectional design**: The analysis uses only 2015 data, which provides a snapshot rather than capturing changes over time. This prevents causal inference about the direction of relationships.
-
-2.  **Country-level aggregation**: Relationships observed at the country level may not reflect individual-level relationships (ecological fallacy). Individual-level data would be needed to confirm these findings.
-
-3.  **Measurement limitations**: Years of schooling is an imperfect measure of educational quality. Additionally, the binary classification of developed/developing may mask substantial heterogeneity within each group.
-
-4.  **Potential omitted variables**: Other factors such as healthcare expenditure, environmental quality, political stability, and cultural factors were not included in the analysis.
+The largest VIF values are for **Income composition of resources** (**8.433**) and **Schooling** (**7.188**), indicating moderate collinearity but not an extreme level for this analysis. The remaining VIF values are low. Overall, multicollinearity does not appear severe enough to invalidate the final model, although it may contribute to reduced significance for schooling after the controls are added.
 
 # Conclusion
 
-This study examined the relationship between education and life expectancy using 2015 data from 130 countries. After controlling for key health and socioeconomic factors (adult mortality, Hepatitis B vaccination, and income composition), we found:
+In this study, we applied statistical modeling and analysis to explore how schooling and development status are associated with life expectancy using the WHO Life Expectancy dataset. Initial simple regression models suggested that schooling had a positive relationship with life expectancy, and this relationship appeared stronger in developing countries than in developed countries. However, after variable selection identified key control variables—adult mortality, Hepatitis B vaccination, and income composition of resources—the effects of both schooling and development status were no longer statistically significant in the full additive model. The interaction term was also not significant in the controlled interaction model (p = 0.343).
 
-1.  **Education does not have a significant independent effect on life expectancy**. The apparent bivariate relationship is explained by confounding factors such as adult mortality, vaccination coverage, and income distribution.
+Instead, income composition of resources and Hepatitis B immunization showed strong positive associations with life expectancy, while adult mortality showed a strong negative association. These results suggest that life expectancy is influenced more directly by economic and health-related conditions rather than by schooling and development status alone, reflecting the combined impact of broader social, medical, and national factors.
 
-2.  **The association between education and life expectancy does not differ between developed and developing countries**. The interaction term was not statistically significant (p = 0.343), indicating that the relationship is consistent across development contexts.
+In conclusion, schooling and development status initially appeared to be associated with life expectancy, but the final regression model showed that their effects were not statistically significant after accounting for other factors. This result indicates that life expectancy is more strongly related to variables such as income composition of resources, adult mortality, and Hepatitis B immunization.
 
-3.  **The strongest predictors of life expectancy** are income composition (positive), adult mortality (negative), and Hepatitis B vaccination coverage (positive), collectively explaining 88.8% of the variation in life expectancy.
+Two limitations should be noted. First, the study is based on observational country-level data from a single year, so the results should be interpreted as associations rather than causal effects. Second, other relevant determinants of life expectancy may be omitted from the final model.
 
-These findings suggest that policies aimed at improving life expectancy should prioritize direct health interventions and economic development. Education remains valuable, but its impact on population health appears to be indirect, mediated through improvements in health outcomes and economic conditions.
+## Submission Details
+
+The final report (PDF) was submitted via Gradescope, and the R/qmd code along with the data files were submitted via Canvas by **Jiayi Lyu** on behalf of the group.
 
 # Statement of AI Use
 
-We used generative AI (ChatGPT) for the following purposes:
-
-1.  **Code debugging**: Assistance with troubleshooting R code errors and optimizing visualizations.
-2.  **Writing assistance**: Help with structuring the report, improving clarity, and correcting grammatical errors.
-3.  **Interpretation guidance**: Discussion of statistical concepts and interpretation of regression results.
-
-All prompts used during the writing process are provided in the Appendix.
-
-# References
-
-Link, B. G., & Phelan, J. (1995). Social conditions as fundamental causes of disease. *Journal of Health and Social Behavior*, 80-94.
-
-Statistics Canada. (2026). *Life expectancy at birth, by sex, Canada*.
-
-World Health Organization. (2020). *Global Health Observatory data repository*.
+Generative AI was used to assist with language revision, grammar checking, and formatting of the report. All statistical analyses, model selections, and interpretations were performed by the group members and verified against the course material.
 
 # Appendix
 
+## Distribution comparison: original vs log-transformed
+
+```{r fig.height=3.5, fig.width=6.8}
+par(mfrow = c(1,2))
+hist(data_sel$`Adult Mortality`, main = "Original Adult Mortality", xlab = "Adult Mortality")
+hist(log(data_sel$`Adult Mortality`), main = "Log-transformed Adult Mortality", xlab = "log(Adult Mortality)")
+par(mfrow = c(1,1))
+```
+
 ## AI Prompts Used
 
-1.  "How do I interpret the VIF output in R for a model with an interaction term?"
-2.  "What is the difference between additive and interaction models in linear regression?"
-3.  "How should I explain the Mallows' Cp criterion in my report?"
-4.  "Help me structure the discussion section for a regression analysis on life expectancy."
-5.  "Can you help me create a clean table of regression coefficients in R Markdown?"
+1.  "Help me improve the grammar and clarity of this paragraph."
+2.  "Can you help me format the regression coefficient table for a report?"
+
+All AI-generated suggestions were reviewed and edited by the group before inclusion in the final report.

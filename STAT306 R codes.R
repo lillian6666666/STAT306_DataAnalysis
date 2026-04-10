@@ -46,17 +46,24 @@ ss_e <- summary(best_model)
 
 
 
-# 4. FINAL MODELS WITH SELECTED CONTROLS
+# 4. FINAL MODELS WITH SELECTED CONTROLS AND LOG TRANSFORMATION
 
 model3 <- lm(LifeExpectancy ~ `Income composition of resources` +
                `Adult Mortality` + `Hepatitis B` + Schooling + Status,
              data = data_sel)
 
+model_log <- lm(LifeExpectancy ~ log(`Adult Mortality`) +
+                  `Income composition of resources` +
+                  `Hepatitis B` + Schooling + Status,
+                data = data_sel)
+
 model4 <- lm(LifeExpectancy ~ `Income composition of resources` +
                `Adult Mortality` + `Hepatitis B` + Schooling * Status,
              data = data_sel)
 
+AIC(model1, model2, model3, model4)
 
+AIC(model3, model_log)
 
 # 5. TABLES
 

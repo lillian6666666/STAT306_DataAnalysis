@@ -1,0 +1,28 @@
+---
+title: "markcaop"
+output: html_document
+---
+
+````{r}
+library(tidyverse)
+data <- read_csv("https://drive.google.com/uc?export=download&id=1A_Nkqsxh4ymFIJDj7Fbo1SOCoVujhbjb")
+data<- data|>na.omit()
+nrow(data)
+sum(is.na(data))/nrow(data)
+reg=lm(`Life expectancy` ~ Schooling + Status,data)
+plot(lm(`Life expectancy` ~ Schooling + Status,data)$residuals)
+reg2=lm(`Life expectancy` ~ Schooling + Status+`Adult Mortality`+`Hepatitis B`+`Income composition of resources`,data)
+plot(reg2$residuals)
+data %>%
+  filter(Status == "Developing") %>%
+  group_by(Country = as.factor(Country)) %>%
+  summarize(mean_life_exp = mean(`Life expectancy`, na.rm = TRUE)) %>%
+  arrange(mean_life_exp)
+data %>%
+  filter(Status == "Developed") %>%
+  group_by(Country = as.factor(Country)) %>%
+  summarize(mean_life_exp = mean(`Life expectancy`, na.rm = TRUE)) %>%
+  arrange(mean_life_exp)
+boxplot(`Life expectancy`~Status, data)
+data|>select(Country=="Canada")
+````
