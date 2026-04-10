@@ -293,6 +293,10 @@ kable(cp_table, caption = "Exhaustive subset selection results")
 
 In addition to examining Mallows' (C_p) and adjusted (R\^2), we also inspected which variables were selected for each model size. The table above shows the variables included in each exhaustive subset model.
 
+The initial set of candidate predictors considered in the model selection procedures included Adult Mortality, infant deaths, percentage expenditure, Hepatitis B, under-five deaths, Diphtheria, thinness (1–19 years), and Income composition of resources. Schooling and Status were retained in all models as primary variables of interest.
+
+The table above shows the variables included in each exhaustive subset model.
+
 In particular, the best model, being the three-predictor model includes:
 
 -   **Adult Mortality**
