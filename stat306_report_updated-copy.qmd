@@ -102,6 +102,8 @@ The data are collected from national health and economic reports and are compile
 
 For this analysis, we focus on a **cross-sectional dataset using observations from the year 2015**, the most recent year available. Restricting the data to a single year allows us to avoid complications arising from repeated observations of the same country over time and makes the standard regression assumptions more reasonable.
 
+The primary response variable we chose to analyze is life expectancy in years in 2015, serving as the dependent variable. As life expectancy differs from year to year and is affected by covariables not covered by the dataset, for example, global pandemics such as SARS of 2003 and Swine Flu of 2009, both of which would affect people's life expectancy of that particular year and create noise for our research purpose, and that's why we decided to focus on a evetless 2015. Two explanatory variables are Schooling (number of years of schooling) and Status (country status, classified as developed or developing).
+
 Our primary research question is:
 
 > **How is schooling associated with life expectancy, and does this association differ between developed and developing countries?**
