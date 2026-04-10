@@ -186,7 +186,7 @@ ggplot(data_sel, aes(x = Schooling, y = LifeExpectancy, color = Status)) +
   theme_minimal()
 ```
 
-The scatter plot suggests a positive relationship between schooling and life expectancy. It also suggests that the slope for developing countries may be steeper than the slope for developed countries, which motivates considering an interaction model in addition to an additive model.
+The scatter plot suggests a positive relationship between schooling and life expectancy. It also suggests that the slope for developing countries may be steeper than the slope for developed countries, which motivates considering an interaction model in addition to an additive model. Also, there appears to be slightly more variation in life expectancy for smaller values of schooling, which we will do a distribution check to address and from there, potentially consider data transformation.
 
 ## Distribution check
 
@@ -209,7 +209,7 @@ ggplot(data_sel, aes(x = `Income composition of resources`)) +
   labs(title = "Distribution of Income Composition")
 ```
 
-We examine the distributions of key variables to assess whether transformations may be necessary. Most variables appear reasonably symmetric, although Adult Mortality shows some right-skewness. This suggests that a transformation such as a logarithmic transformation may be considered.
+We examine the distributions of key variables to assess whether transformations may be necessary. Most variables appear reasonably symmetric, including Schooling, although Adult Mortality shows some right-skewness. This suggests that a transformation such as a logarithmic transformation may be considered.
 
 ## Log transformation check
 
@@ -289,13 +289,13 @@ kable(cp_table, caption = "Exhaustive subset selection results")
 
 In addition to examining Mallows' (C_p) and adjusted (R\^2), we also inspected which variables were selected for each model size. The table above shows the variables included in each exhaustive subset model.
 
-In particular, the three-predictor model includes:
+In particular, the best model, being the three-predictor model includes:
 
 -   **Adult Mortality**
 -   **Hepatitis B**
 -   **Income composition of resources**
 
-This model has a (C_p) value close to the target value (p = k+1), indicating a good balance between model fit and model complexity. These three variables were also selected consistently across the forward, backward, and exhaustive procedures.
+This model has a (C_p) value closest to the target value (p = k+1), indicating a good balance between model fit and model complexity. These three variables were also selected consistently across the forward, backward, and exhaustive procedures.
 
 We therefore retain these variables as control variables in the final stage of the analysis in order to better isolate the relationship between our primary variables of interest, **Schooling** and **Status**, and life expectancy.
 
