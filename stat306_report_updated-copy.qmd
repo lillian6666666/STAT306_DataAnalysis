@@ -116,14 +116,14 @@ We remove variables not used in the current analysis (`Year`, `Country`, `Alcoho
 
 ## Variables of Interest
 
-| Variable                            | Type         | Description                                                                              |
+| Variable | Type | Description |
 |------------------------|------------------------|------------------------|
-| **LifeExpectancy**                  | Quantitative | Average number of years a newborn is expected to live under current mortality conditions |
-| **Schooling**                       | Quantitative | Average number of years of schooling among adults                                        |
-| **Status**                          | Categorical  | Country development classification: Developed or Developing                              |
-| **Adult Mortality**                 | Quantitative | Probability of dying between ages 15 and 60 per 1000 population                          |
-| **Hepatitis B**                     | Quantitative | Percentage of one-year-olds immunized against Hepatitis B                                |
-| **Income composition of resources** | Quantitative | Index measuring the distribution of income and resources                                 |
+| **LifeExpectancy** | Quantitative | Average number of years a newborn is expected to live under current mortality conditions |
+| **Schooling** | Quantitative | Average number of years of schooling among adults |
+| **Status** | Categorical | Country development classification: Developed or Developing |
+| **Adult Mortality** | Quantitative | Probability of dying between ages 15 and 60 per 1000 population |
+| **Hepatitis B** | Quantitative | Percentage of one-year-olds immunized against Hepatitis B |
+| **Income composition of resources** | Quantitative | Index measuring the distribution of income and resources |
 
 ## Data Cleaning
 
@@ -242,7 +242,7 @@ These were retained as control variables in the final stage of the analysis.
 
 ## Final Regression Analysis
 
-### Model 3: Additive Model with Controls
+### Model 3: Additive Model While Controlling For Other Variables Constant
 
 $$
 \begin{aligned}
@@ -283,7 +283,7 @@ This change compared to the preliminary models suggests that the apparent relati
 
 The model has an (R\^2) of **0.8882** and an adjusted (R\^2) of **0.8837**, indicating that approximately **88.8%** of the variation in life expectancy is explained by the variables included in the model. This high explanatory power suggests that the selected variables capture key determinants of life expectancy at the country level.
 
-### Model 4: Interaction Model with Controls
+### Model 4: Interaction Model While Controlling For Other Variables Constant
 
 We specifically examined the interaction between educational achievement and development level, as our research question directly addresses whether the relationship between educational achievement and life expectancy differs between developed and developing countries. We did not include interaction terms involving control variables, as doing so would significantly increase the model’s complexity, reduce its interpretability, and stray from the core issues of primary concern. Our objective is to determine whether the impact of educational achievement varies across different levels of development.
 
