@@ -242,7 +242,7 @@ These were retained as control variables in the final stage of the analysis.
 
 ## Final Regression Analysis
 
-### Model 3: Additive Model While Controlling For Other Variables Constant
+### Model 3: Additive Model With Controls
 
 $$
 \begin{aligned}
@@ -283,7 +283,7 @@ This change compared to the preliminary models suggests that the apparent relati
 
 The model has an (R\^2) of **0.8882** and an adjusted (R\^2) of **0.8837**, indicating that approximately **88.8%** of the variation in life expectancy is explained by the variables included in the model. This high explanatory power suggests that the selected variables capture key determinants of life expectancy at the country level.
 
-### Model 4: Interaction Model While Controlling For Other Variables Constant
+### Model 4: Interaction Model With Controls
 
 We specifically examined the interaction between educational achievement and development level, as our research question directly addresses whether the relationship between educational achievement and life expectancy differs between developed and developing countries. We did not include interaction terms involving control variables, as doing so would significantly increase the model’s complexity, reduce its interpretability, and stray from the core issues of primary concern. Our objective is to determine whether the impact of educational achievement varies across different levels of development.
 
