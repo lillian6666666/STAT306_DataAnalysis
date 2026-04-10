@@ -102,7 +102,11 @@ The data are collected from national health and economic reports and are compile
 
 For this analysis, we focus on a **cross-sectional dataset using observations from the year 2015**, the most recent year available. Restricting the data to a single year allows us to avoid complications arising from repeated observations of the same country over time and makes the standard regression assumptions more reasonable.
 
-The primary response variable we chose to analyze is life expectancy in years in 2015, serving as the dependent variable. As life expectancy differs from year to year and is affected by covariables not covered by the dataset, for example, global pandemics such as SARS of 2003 and Swine Flu of 2009, both of which would affect people's life expectancy of that particular year and create noise for our research purpose, and that's why we decided to focus on a evetless 2015. Two explanatory variables are Schooling (number of years of schooling) and Status (country status, classified as developed or developing).
+The primary response variable in this analysis is life expectancy in years for 2015, which serves as the dependent variable. Life expectancy varies over time and may be influenced by external factors not captured in the dataset, such as global health events. For example, events such as the SARS outbreak in 2003 and the H1N1 (Swine Flu) pandemic in 2009 could temporarily affect life expectancy and introduce variability unrelated to the variables of interest.
+
+To reduce this source of variation and maintain a consistent cross-sectional framework, we restrict our analysis to the year 2015, which we treat as a relatively stable reference point.
+
+The two primary explanatory variables are **Schooling** (average years of schooling) and **Status** (country classification as developed or developing).
 
 Our primary research question is:
 
@@ -116,7 +120,13 @@ Each observation in the dataset represents a country in a given year. To maintai
 
 We remove variables not used in the current analysis (`Year`, `Country`, `Alcohol`, and `Total expenditure`) and apply listwise deletion to retain complete cases. The final dataset consists of **130 countries**.
 
-## Variables of Interest
+We removed `Country` from the analysis because it contains a large number of unique categories, which would introduce a high number of parameters if included directly in a regression model. Instead, we use the variable `Status`, as a meaningful grouping of countries, which allows us to capture broad structural differences while maintaining interpretability.
+
+The variables `Alcohol` and `Total expenditure` were removed due to a substantial number of missing values. We assume that these missing values occur without a systematic pattern and therefore do not introduce significant bias after listwise deletion. However, the missingness is not random, this could be a limitation of the analysis.
+
+## Variables Used in the Analysis
+
+While the dataset contains many variables, we focus on a subset that is most relevant to our research question.
 
 | Variable | Type | Description |
 |------------------------|------------------------|------------------------|
@@ -132,7 +142,7 @@ We remove variables not used in the current analysis (`Year`, `Country`, `Alcoho
 The following data cleaning steps were performed:
 
 1.  Filtered observations to retain only **2015** data.
-2.  Removed `Year`, `Country`, `Alcohol`, and `Total expenditure`.
+2.  Removed `Country`, `Alcohol`, and `Total expenditure`.
 3.  Excluded observations with missing values using listwise deletion.
 4.  Converted `Status` to a factor for categorical analysis.
 
@@ -177,6 +187,49 @@ ggplot(data_sel, aes(x = Schooling, y = LifeExpectancy, color = Status)) +
 ```
 
 The scatter plot suggests a positive relationship between schooling and life expectancy. It also suggests that the slope for developing countries may be steeper than the slope for developed countries, which motivates considering an interaction model in addition to an additive model.
+
+## Distribution check
+
+```{r fig.height=3.5, fig.width=5.4}
+# Distribution of key variables
+ggplot(data_sel, aes(x = LifeExpectancy)) +
+  geom_histogram(bins = 30) +
+  labs(title = "Distribution of Life Expectancy")
+
+ggplot(data_sel, aes(x = Schooling)) +
+  geom_histogram(bins = 30) +
+  labs(title = "Distribution of Schooling")
+
+ggplot(data_sel, aes(x = `Adult Mortality`)) +
+  geom_histogram(bins = 30) +
+  labs(title = "Distribution of Adult Mortality")
+
+ggplot(data_sel, aes(x = `Income composition of resources`)) +
+  geom_histogram(bins = 30) +
+  labs(title = "Distribution of Income Composition")
+```
+
+We examine the distributions of key variables to assess whether transformations may be necessary. Most variables appear reasonably symmetric, although Adult Mortality shows some right-skewness. This suggests that a transformation such as a logarithmic transformation may be considered.
+
+## Log transformation check
+
+```{r fig.height=3.5, fig.width=5.4}
+model_log <- lm(LifeExpectancy ~ log(`Adult Mortality`) +
+                  `Income composition of resources` +
+                  `Hepatitis B` + Schooling + Status,
+                data = data_sel)
+
+summary(model_log)
+
+# Compare models
+AIC(model3, model_log)
+```
+
+We also explored potential transformations for skewed variables. In particular, we applied a log transformation to Adult Mortality to account for its right-skewed distribution.
+
+The transformed model did not lead to a substantial improvement in model fit or interpretability, as measured by AIC and overall conclusions. Therefore, for simplicity and ease of interpretation, we proceed with the original (untransformed) variables in the final model.
+
+This suggests that the linear model assumptions are reasonably satisfied without requiring major transformations.
 
 ## Preliminary Regression Analysis
 
@@ -234,13 +287,17 @@ To identify a reasonable set of control variables, we applied forward selection,
 kable(cp_table, caption = "Exhaustive subset selection results")
 ```
 
-Across the forward, backward, and exhaustive procedures, the same three control variables were identified for the three-predictor model:
+In addition to examining Mallows' (C_p) and adjusted (R\^2), we also inspected which variables were selected for each model size. The table above shows the variables included in each exhaustive subset model.
+
+In particular, the three-predictor model includes:
 
 -   **Adult Mortality**
 -   **Hepatitis B**
 -   **Income composition of resources**
 
-These were retained as control variables in the final stage of the analysis.
+This model has a (C_p) value close to the target value (p = k+1), indicating a good balance between model fit and model complexity. These three variables were also selected consistently across the forward, backward, and exhaustive procedures.
+
+We therefore retain these variables as control variables in the final stage of the analysis in order to better isolate the relationship between our primary variables of interest, **Schooling** and **Status**, and life expectancy.
 
 ## Final Regression Analysis
 
@@ -310,6 +367,16 @@ In Model 4, the interaction term **Schooling × StatusDeveloping** is not statis
 
 Because the interaction is not significant and the adjusted (R\^2) does not improve, we select **Model 3** as the final model by the principle of parsimony.
 
+```{r}
+AIC(model1, model2, model3, model4)
+```
+
+We further compare the models using the Akaike Information Criterion (AIC), which balances model fit and complexity.
+
+Model 3 has the lowest AIC (637.60) among all models, indicating the best trade-off between goodness of fit and model simplicity. Although Model 4 includes an interaction term, it has a slightly higher AIC (638.64), suggesting that the added complexity is not justified.
+
+Therefore, both the hypothesis test for the interaction term and the AIC comparison support selecting Model 3 as the final model.
+
 ## Diagnostics and Multicollinearity
 
 ```{r fig.height=3.5, fig.width=6.8}
@@ -324,7 +391,7 @@ qqline(resid(model3), col = "red", lty = 2)
 par(mfrow = c(1, 1))
 ```
 
-The residuals vs fitted plot shows no strong systematic pattern, suggesting that the linearity and constant variance assumptions are reasonably satisfied. The Q-Q plot indicates that the residuals are approximately normal, with only modest deviations in the tails.
+The residuals vs fitted plot shows no strong systematic pattern, suggesting that the linearity and constant variance assumptions are reasonably satisfied. The Q-Q plot indicates that the residuals are approximately normal, with only modest deviations in the tails.These issues are not severe but should be acknowledged as limitations when interpreting the model.
 
 We assessed multicollinearity using variance inflation factors (VIFs) for the final additive model.
 
@@ -353,6 +420,15 @@ The final report (PDF) was submitted via Gradescope, and the R/qmd code along wi
 Generative AI was used to assist with language revision, grammar checking, and formatting of the report. All statistical analyses, model selections, and interpretations were performed by the group members and verified against the course material.
 
 # Appendix
+
+## Distribution comparison: original vs log-transformed
+
+```{r fig.height=3.5, fig.width=6.8}
+par(mfrow = c(1,2))
+hist(data_sel$`Adult Mortality`, main = "Original Adult Mortality", xlab = "Adult Mortality")
+hist(log(data_sel$`Adult Mortality`), main = "Log-transformed Adult Mortality", xlab = "log(Adult Mortality)")
+par(mfrow = c(1,1))
+```
 
 ## AI Prompts Used
 
