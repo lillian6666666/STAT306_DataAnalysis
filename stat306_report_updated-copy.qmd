@@ -137,6 +137,8 @@ While the dataset contains many variables, we focus on a subset that is most rel
 | **Hepatitis B** | Quantitative | Percentage of one-year-olds immunized against Hepatitis B |
 | **Income composition of resources** | Quantitative | Index measuring the distribution of income and resources |
 
+For the categorical variable Status, "Developed" is used as the reference group in all regression models.
+
 ## Data Cleaning
 
 The following data cleaning steps were performed:
@@ -173,6 +175,8 @@ ggplot(data_sel, aes(x = Status, y = LifeExpectancy, fill = Status)) +
 ```
 
 The boxplot suggests that developed countries tend to have higher life expectancy than developing countries, although there is overlap between the two groups. After a closer examination, we pinpointed the source of this overlap. As of 2015, the category of "Developing countries" contain both countries that struggle with basic health insurance and now "developed countries" such as Canada, making the variation in life expectancy in devloping countries high and creating the overlap between the two statues.
+
+While there is some overlap between the two groups, there is no strong evidence of extreme outliers in either distribution. The spread appears wider for developing countries, indicating greater variability in life expectancy across those countries.
 
 ```{r fig.height=3.5, fig.width=5.4}
 ggplot(data_sel, aes(x = Schooling, y = LifeExpectancy, color = Status)) +
