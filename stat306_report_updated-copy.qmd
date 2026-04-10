@@ -438,6 +438,10 @@ hist(log(data_sel$`Adult Mortality`), main = "Log-transformed Adult Mortality", 
 par(mfrow = c(1,1))
 ```
 
+## Additional Variable Selection Results
+
+Forward and backward selection procedures produced results consistent with the exhaustive subset selection, identifying the same set of predictors (Adult Mortality, Hepatitis B, and Income composition of resources). Detailed outputs are omitted for brevity.
+
 ## AI Prompts Used
 
 1.  "Help me improve the grammar and clarity of this paragraph."
