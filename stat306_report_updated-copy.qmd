@@ -5,10 +5,8 @@ author:
     affiliation: "STAT 306, University of British Columbia"
 date: "April 12, 2025"
 format:
-  pdf:
+  html:
     documentclass: article
-    pdf-engine: pdflatex
-    pdf-engine: xelatex
     fontsize: 10pt
     geometry: margin=1in
     number-sections: true
@@ -93,17 +91,34 @@ vif_m3 <- tibble(
 )
 ```
 
+# Statement of Changes
+
+- Clarified the reason for restricting the analysis to 2015 and emphasized the cross-sectional framework.
+- Added a fuller data description, including the effect of listwise deletion and the proportion of observations removed due to missing values.
+- Explained why `Country`, `Alcohol`, and `Total expenditure` were removed from the analysis.
+- Specified that `Status` is treated as a categorical variable with “Developed” as the reference group.
+- Expanded the exploratory data analysis section by adding an introduction, discussing overlap and variability between groups, and examining distributions of key variables.
+- Added a transformation check for Adult Mortality and compared the transformed and untransformed models using AIC.
+- Clarified the distinction between exploratory analysis and statistical modelling by adding a fuller introduction to the regression analysis section.
+- Expanded the variable selection discussion by identifying the predictors considered and explaining why Adult Mortality, Hepatitis B, and Income composition of resources were retained as controls.
+- Added justification for considering the Schooling × Status interaction term.
+- Clarified that multiple coefficient tests are being conducted and that the reported p-values correspond to individual parameter tests.
+- Added model comparison using AIC and explained why Model 3 was selected as the final model.
+- Expanded the diagnostics discussion to address residual patterns, normality, heteroscedasticity, and multicollinearity.
+- Revised the conclusion to better summarize the main findings and added a fuller discussion of study limitations, including missing data, mild heteroscedasticity, and multicollinearity.
+- Added an appendix note stating that the forward and backward selection procedures were consistent with the exhaustive subset selection.
+
+\newpage
+
 # Introduction
 
-Life expectancy is an important indicator of a country’s overall health and socioeconomic development. For example, Canada had an average life expectancy of 82.2 years in 2024 (Statistics Canada, 2026), reflecting a high standard of living and a well-developed healthcare system. In general, life expectancy represents the average number of years a person is expected to live under current mortality conditions, and it may be influenced by a range of factors such as income, access to healthcare, and overall living conditions.
+Life expectancy is an important indicator of a country’s overall health and socioeconomic development. In general, life expectancy represents the average number of years a person is expected to live under current mortality conditions, and it may be influenced by a range of factors such as income, access to healthcare, and overall living conditions.
 
 In this study, we use the *Life Expectancy (WHO)* dataset from Kaggle, which compiles country-level health and socioeconomic indicators from the World Health Organization (WHO) and related United Nations sources. The full dataset contains annual observations from 2000 to 2015 for 193 countries and includes variables on mortality, immunization, income, education, and other demographic and health characteristics.
 
 The data are collected from national health and economic reports and are compiled, cleaned, and standardized by organizations such as the WHO to allow meaningful comparisons across countries and over time. Each observation represents a country in a specific year and includes variables such as life expectancy, schooling, mortality rates, BMI, and development status.
 
-For this analysis, we focus on a **cross-sectional dataset using observations from the year 2015**, the most recent year available. Restricting the data to a single year allows us to avoid complications arising from repeated observations of the same country over time and makes the standard regression assumptions more reasonable.
-
-The primary response variable in this analysis is life expectancy in years for 2015, which serves as the dependent variable. Life expectancy varies over time and may be influenced by external factors not captured in the dataset, such as global health events. For example, events such as the SARS outbreak in 2003 and the H1N1 (Swine Flu) pandemic in 2009 could temporarily affect life expectancy and introduce variability unrelated to the variables of interest.
+For this analysis, we restrict the dataset to observations from 2015 to create a cross-sectional framework. Using a single year avoids complications arising from repeated measurements of the same countries over time and ensures that observations can be treated as independent. This makes the standard linear regression assumptions more appropriate for our analysis.
 
 To reduce this source of variation and maintain a consistent cross-sectional framework, we restrict our analysis to the year 2015, which we treat as a relatively stable reference point.
 
@@ -130,16 +145,13 @@ The variables `Alcohol` and `Total expenditure` were removed due to a substantia
 While the dataset contains many variables, we focus on a subset that is most relevant to our research question.
 
 | Variable | Type | Description |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | **LifeExpectancy** | Quantitative | Average number of years a newborn is expected to live under current mortality conditions |
 | **Schooling** | Quantitative | Average number of years of schooling among adults |
 | **Status** | Categorical | Country development classification: Developed or Developing |
 | **Adult Mortality** | Quantitative | Probability of dying between ages 15 and 60 per 1000 population |
 | **Hepatitis B** | Quantitative | Percentage of one-year-olds immunized against Hepatitis B |
 | **Income composition of resources** | Quantitative | Index measuring the distribution of income and resources |
-| **HIV/AIDS** | numerical | Deaths per 1 000 live births HIV/AIDS (0-4 years) |
-| **infant deaths** | numerical | Number of Infant Deaths per 1000 population |
-| **thinness 1-19 years** | numerical | Prevalence of thinness among children and adolescents for Age 10 to 19 (%) |
 
 For the categorical variable Status, "Developed" is used as the reference group in all regression models.
 
@@ -199,22 +211,14 @@ The scatter plot suggests a positive relationship between schooling and life exp
 ## Distribution check
 
 ```{r fig.height=3.5, fig.width=5.4}
-# Distribution of key variables
-ggplot(data_sel, aes(x = LifeExpectancy)) +
-  geom_histogram(bins = 30) +
-  labs(title = "Distribution of Life Expectancy")
+library(patchwork)
 
-ggplot(data_sel, aes(x = Schooling)) +
-  geom_histogram(bins = 30) +
-  labs(title = "Distribution of Schooling")
+p1 <- ggplot(data_sel, aes(x = LifeExpectancy)) + geom_histogram(bins = 30)
+p2 <- ggplot(data_sel, aes(x = Schooling)) + geom_histogram(bins = 30)
+p3 <- ggplot(data_sel, aes(x = `Adult Mortality`)) + geom_histogram(bins = 30)
+p4 <- ggplot(data_sel, aes(x = `Income composition of resources`)) + geom_histogram(bins = 30)
 
-ggplot(data_sel, aes(x = `Adult Mortality`)) +
-  geom_histogram(bins = 30) +
-  labs(title = "Distribution of Adult Mortality")
-
-ggplot(data_sel, aes(x = `Income composition of resources`)) +
-  geom_histogram(bins = 30) +
-  labs(title = "Distribution of Income Composition")
+(p1 | p2) / (p3 | p4)
 ```
 
 We examine the distributions of key variables to assess whether transformations may be necessary. Most variables appear reasonably symmetric, including Schooling, although Adult Mortality shows some right-skewness. This suggests that a transformation such as a logarithmic transformation may be considered.
@@ -227,17 +231,10 @@ model_log <- lm(LifeExpectancy ~ log(`Adult Mortality`) +
                   `Hepatitis B` + Schooling + Status,
                 data = data_sel)
 
-summary(model_log)
-
 # Compare models
 AIC(model3, model_log)
 ```
-
-We also explored potential transformations for skewed variables. In particular, we applied a log transformation to Adult Mortality to account for its right-skewed distribution.
-
-The transformed model did not lead to a substantial improvement in model fit or interpretability, as measured by AIC and overall conclusions. Therefore, for simplicity and ease of interpretation, we proceed with the original (untransformed) variables in the final model.
-
-This suggests that the linear model assumptions are reasonably satisfied without requiring major transformations.
+A log transformation of Adult Mortality was considered, but it did not improve model fit based on AIC. Therefore, the original variables were retained.
 
 ## Preliminary Regression Analysis
 
