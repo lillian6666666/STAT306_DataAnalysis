@@ -1,13 +1,14 @@
 ---
-title: "Project Draft 1"
+title: "Project Draft 2"
 author:
   - name: "Ruiting Jiang, Mark Cao, Lillian Chen, Jiayi Lyu"
     affiliation: "STAT 306, University of British Columbia"
-date: "March 23, 2025"
+date: "April 12, 2025"
 format:
   pdf:
     documentclass: article
     pdf-engine: pdflatex
+    pdf-engine: xelatex
     fontsize: 10pt
     geometry: margin=1in
     number-sections: true
@@ -129,7 +130,7 @@ The variables `Alcohol` and `Total expenditure` were removed due to a substantia
 While the dataset contains many variables, we focus on a subset that is most relevant to our research question.
 
 | Variable | Type | Description |
-|------------------------|------------------------|------------------------|
+|----|----|----|
 | **LifeExpectancy** | Quantitative | Average number of years a newborn is expected to live under current mortality conditions |
 | **Schooling** | Quantitative | Average number of years of schooling among adults |
 | **Status** | Categorical | Country development classification: Developed or Developing |
